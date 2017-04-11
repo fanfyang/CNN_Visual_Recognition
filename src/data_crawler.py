@@ -34,7 +34,8 @@ def download_images(urls, product, path):
 		download_image(url, name, path)
 
 if __name__ == '__main__':
-	db, cursor = connect_database() # connect database
+	db_info = {'host':,'user':,'passwd':,'port':,'db':} # db_info
+	db, cursor = connect_database(db_info) # connect database
 	product = 'jersey'
 	urls = collect_image_amazon(db, cursor, product, 20) # collect image urls
 	path = '../data/'+product

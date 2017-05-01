@@ -92,6 +92,7 @@ def insert_product(db, cursor, products):
 		if 'title' in product:
 			attrs += ', title'
 			values += ',\'' + product['title'].replace('\'','\'\'') + '\''
+			# values += ',\'<missing>\''
 		if 'price' in product:
 			attrs += ', price'
 			values += ',' + str(product['price'])
@@ -101,55 +102,56 @@ def insert_product(db, cursor, products):
 		if 'brand' in product:
 			attrs += ', brand'
 			values += ',\'' + product['brand'].replace('\'','\'\'') + '\''
+			# values += ',\'<missing>\''
 		try:
 			cursor.execute("""
 				INSERT INTO Amazon_Metadata (%s)
 				VALUES (%s)
 				""" %(attrs, values))
 		except:
-			print 'Amazon_Metadata Insertion Failed. asin: ' + product['asin']
+			# print 'Amazon_Metadata Insertion Failed. asin: ' + product['asin']
 			succ = 1
 
-		if 'related' in product:
-			for key in product['related']:
-				for value in product['related'][key]:
+		if succ == 0:
+			if 'related' in product:
+				for key in product['related']:
+					for value in product['related'][key]:
+						try:
+							cursor.execute("""
+								INSERT INTO Amazon_RelatedProduct (asin, relation, asin_related)
+								VALUES ('%s', '%s', '%s')
+								""" % (product['asin'], key, value))
+						except:
+							# print 'Amazon_RelatedProduct Insertion Failed. asin: ' + product['asin']
+							succ = 1
+
+			if 'salesRank' in product:
+				for key in product['salesRank']:
 					try:
 						cursor.execute("""
-							INSERT INTO Amazon_RelatedProduct (asin, relation, asin_related)
+							INSERT INTO Amazon_SalesRank (asin, category, rank)
 							VALUES ('%s', '%s', '%s')
-							""" % (product['asin'], key, value))
+							""" % (product['asin'], key.replace('\'','\'\''), str(product['salesRank'][key])))
 					except:
-						print 'Amazon_RelatedProduct Insertion Failed. asin: ' + product['asin']
+						# print 'Amazon_SalesRank Insertion Failed. asin: ' + product['asin']
 						succ = 1
 
-		if 'salesRank' in product:
-			for key in product['salesRank']:
-				try:
-					cursor.execute("""
-						INSERT INTO Amazon_SalesRank (asin, category, rank)
-						VALUES ('%s', '%s', '%s')
-						""" % (product['asin'], key.replace('\'','\'\''), str(product['salesRank'][key])))
-				except:
-					print 'Amazon_SalesRank Insertion Failed. asin: ' + product['asin']
-					succ = 1
-
-		if 'categories' in product:
-			for category in product['categories']:
-				attrs = 'asin'
-				values = '\'' + product['asin'] + '\''
-				for i in range(min(len(category),10)):
-					attrs += ',category_' + str(i)
-					values += ',\'' + category[i].replace('\'','\'\'') + '\''
-				try:
-					cursor.execute("""
-						INSERT INTO Amazon_Categories (%s)
-						VALUES (%s)
-						""" %(attrs.rstrip(','), values.rstrip(',')))
-				except:
-					print 'Amazon_Categories Insertion Failed. asin: ' + product['asin']
-					succ = 1
-
-		if succ == 1:
+			if 'categories' in product:
+				for category in product['categories']:
+					attrs = 'asin'
+					values = '\'' + product['asin'] + '\''
+					for i in range(min(len(category),10)):
+						attrs += ',category_' + str(i)
+						values += ',\'' + category[i].replace('\'','\'\'') + '\''
+					try:
+						cursor.execute("""
+							INSERT INTO Amazon_Categories (%s)
+							VALUES (%s)
+							""" %(attrs.rstrip(','), values.rstrip(',')))
+					except:
+						# print 'Amazon_Categories Insertion Failed. asin: ' + product['asin']
+						succ = 1
+		else:
 			with open('../data/metadata_failure.json','a') as f:
 				json.dump(product,f)
 				f.write('\n')

@@ -34,6 +34,10 @@ def create_Amazon_product_table(db, cursor):
 		timeStamp TIMESTAMP(6)
 		)""")
 	cursor.execute("""
+		CREATE INDEX Metadata_index
+		ON Amazon_Metadata (asin)
+		""")
+	cursor.execute("""
 		CREATE TABLE Amazon_RelatedProduct (
 		id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 		asin VARCHAR(255),
@@ -42,6 +46,10 @@ def create_Amazon_product_table(db, cursor):
 		timeStamp TIMESTAMP(6)
 		)""")
 	cursor.execute("""
+		CREATE INDEX RelatedProduct_index
+		ON Amazon_RelatedProduct (asin)
+		""")
+	cursor.execute("""
 		CREATE TABLE Amazon_SalesRank (
 		id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 		asin VARCHAR(255),
@@ -49,6 +57,10 @@ def create_Amazon_product_table(db, cursor):
 		rank INT,
 		timeStamp TIMESTAMP(6)
 		)""")
+	cursor.execute("""
+		CREATE INDEX SalesRank_index
+		ON Amazon_SalesRank (asin)
+		""")
 	cursor.execute("""
 		CREATE TABLE Amazon_Categories (
 		id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -65,6 +77,10 @@ def create_Amazon_product_table(db, cursor):
 		category_9 VARCHAR(255),
 		timeStamp TIMESTAMP(6)
 		)""")
+	cursor.execute("""
+		CREATE INDEX Categories_index
+		ON Amazon_Categories (asin)
+		""")
 
 def insert_product(db, cursor, products):
 	for product in products:

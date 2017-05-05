@@ -33,7 +33,7 @@ with open('../data/imUrl.csv','r') as csvfile:
 			failure.append((asin, imUrl, category))
 		if (count / 500) * 500 == count:
 			num_eq = count / count_per_print
-			sys.stdout.write('\r '+str(count)+' / '+str(N)+' [' + '='*num_eq + ' '*(25 - num_eq) + '] - %0.2fs - est. %0.2fs'%(float(time.time()-start), float(time.time()-start) * N / count))
+			sys.stdout.write('\r '+str(count)+' / '+str(N)+' [' + '='*num_eq + ' '*(25 - num_eq) + '] - %0.2fs - est. %0.2fs'%(float(time.time()-start), float(time.time()-start) * num_download / (count-num_skip)))
 			sys.stdout.flush()
 	sys.stdout.write('\r '+str(count)+' / '+str(count)+' [' + '='*25 + '] - %0.2fs \n\nFinished! \n'%(float(time.time()-start)))
 	sys.stdout.flush()

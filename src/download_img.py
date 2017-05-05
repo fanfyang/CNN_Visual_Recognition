@@ -6,8 +6,8 @@ start = time.time()
 N = 3400000
 count = 0
 count_per_print = N / 25
-# with open('../data/small_data.csv','r') as csvfile:
-with open('../data/imUrl.csv','r') as csvfile:
+with open('../data/small_data.csv','r') as csvfile:
+# with open('../data/imUrl.csv','r') as csvfile:
 	reader = csv.reader(csvfile)
 	for row in reader:
 		asin, imUrl, category = row
@@ -25,3 +25,7 @@ with open('../data/imUrl.csv','r') as csvfile:
 			sys.stdout.flush()
 	sys.stdout.write('\r '+str(count)+' / '+str(count)+' [' + '='*25 + '] - %0.2fs \n\nFinished! \n'%(float(time.time()-start)))
 	sys.stdout.flush()
+with open('../data/download_failure.csv','w') as csvfile:
+	writer = csv.writer(csvfile)
+	for row in failure:
+		writer.writerow(row)

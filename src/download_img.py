@@ -13,7 +13,7 @@ failure = []
 start = time.time()
 N = 3400000
 count = 0
-count_per_print = N / 25
+count_per_print = num_download / 25
 # with open('../data/small_data.csv','r') as csvfile:
 with open('../data/imUrl.csv','r') as csvfile:
 	reader = csv.reader(csvfile)
@@ -32,7 +32,7 @@ with open('../data/imUrl.csv','r') as csvfile:
 		except:
 			failure.append((asin, imUrl, category))
 		if (count / 500) * 500 == count:
-			num_eq = count / count_per_print
+			num_eq = (count-num_skip) / count_per_print
 			sys.stdout.write('\r '+str(count)+' / '+str(N)+' [' + '='*num_eq + ' '*(25 - num_eq) + '] - %0.2fs - est. %0.2fs'%(float(time.time()-start), float(time.time()-start) * num_download / (count-num_skip)))
 			sys.stdout.flush()
 	sys.stdout.write('\r '+str(count-1)+' / '+str(count-1)+' [' + '='*25 + '] - %0.2fs \n\nFinished! \n'%(float(time.time()-start)))

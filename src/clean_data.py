@@ -7,7 +7,7 @@ db, cursor = connect_database(db_info)
 start = time.time()
 N = 10000000
 count = 0
-count_per_print = N / 25
+count_per_print = N / 20
 with open('../data/metadata.json', 'r') as f:
 	for line in f:
 		product = json.loads(json.dumps(eval(line)))

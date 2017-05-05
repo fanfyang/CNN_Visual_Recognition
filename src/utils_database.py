@@ -81,6 +81,18 @@ def create_Amazon_product_table(db, cursor):
 		CREATE INDEX Categories_index
 		ON Amazon_Categories (asin)
 		""")
+	cursor.execute("""
+		CREATE TABLE Amazon_Clean (
+		id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+		asin VARCHAR(255),
+		imUrl VARCHAR(255),
+		category VARCHAR(255),
+		timeStamp TIMESTAMP(6)
+		)""")
+	cursor.execute("""
+		CREATE INDEX Clean_index
+		ON Amazon_Clean (asin)
+		""")
 
 def insert_product(db, cursor, products):
 	for product in products:

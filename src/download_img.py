@@ -1,4 +1,12 @@
-import csv, os, urllib, sys, time
+import csv, os, urllib, sys, time, argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-s', '--S', help = 'num_skip')
+parser.add_argument('-n', '--N', help = 'num_download')
+args = parser.parse_args()
+
+num_skip = int(args.S)
+num_download = int(args.N)
 
 failure = []
 
@@ -6,10 +14,15 @@ start = time.time()
 N = 3400000
 count = 0
 count_per_print = N / 25
-with open('../data/small_data.csv','r') as csvfile:
-# with open('../data/imUrl.csv','r') as csvfile:
+# with open('../data/small_data.csv','r') as csvfile:
+with open('../data/imUrl.csv','r') as csvfile:
 	reader = csv.reader(csvfile)
 	for row in reader:
+		count += 1
+		if count <= num_skip:
+			continue
+		if count > num_skip + num_download:
+			break
 		asin, imUrl, category = row
 		path = os.path.join('../data/img/',category)
 		if not os.path.exists(path):
@@ -18,7 +31,6 @@ with open('../data/small_data.csv','r') as csvfile:
 			urllib.urlretrieve(imUrl, os.path.join(path, asin+'.'+imUrl.split('.')[-1]))
 		except:
 			failure.append((asin, imUrl, category))
-		count += 1
 		if (count / 500) * 500 == count:
 			num_eq = count / count_per_print
 			sys.stdout.write('\r '+str(count)+' / '+str(N)+' [' + '='*num_eq + ' '*(25 - num_eq) + '] - %0.2fs - est. %0.2fs'%(float(time.time()-start), float(time.time()-start) * N / count))

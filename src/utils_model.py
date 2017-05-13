@@ -60,7 +60,9 @@ class model(object):
 			sess.run(self._parameters[key].assign(parameters[key]))
 
 	def save_parameters(self, sess, path):
-		exec('np.savez(\'%s\''%(path) + ',' + ','.join(['%s = sess.run(self._parameters[\'%s\'])' %(key, key) for key in self._parameters]) + ')')
+		if not os.path.exists(path):
+			os.makedirs(path)
+		exec('np.savez(\'%s\''%(path+'para.npz') + ',' + ','.join(['%s = sess.run(self._parameters[\'%s\'])' %(key, key) for key in self._parameters]) + ')')
 
 	# You might want to re-define this function for your model
 	def predict(self, sess, image_path):

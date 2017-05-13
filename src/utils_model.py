@@ -47,7 +47,6 @@ class Config:
 class model(object):
 	def __init__(self):
 		self._parameters = None
-		self._channel_mean = np.array([ 203.89836428,  191.68313589,  180.50212764])
 		self._score = None
 		self._loss = None
 		self._pred = None

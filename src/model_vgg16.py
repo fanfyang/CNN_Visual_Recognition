@@ -1,5 +1,8 @@
 from utils_model import *
 import tensorflow as tf
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.getcwd(), os.pardir, 'data/vgg16')))
+from imagenet_classes import *
 
 class model_vgg16(model):
 	def __init__(self):
@@ -11,7 +14,8 @@ class model_vgg16(model):
 		self._dropout_placeholder = tf.placeholder(dtype = tf.float32)
 
 		self._channel_mean = np.array([ 203.89836428,  191.68313589,  180.50212764])
-
+		global class_names
+		self._class_names = class_names
 		self._parameters = dict()
 
 		with tf.variable_scope('vgg16/conv1_1') as scope:
@@ -184,8 +188,6 @@ if __name__ == '__main__':
 	vgg16 = model_vgg16()
 	with tf.Session() as sess:
 		vgg16.load_parameters(sess,'../data/vgg16/vgg16_weights.npz')
-		vgg16.predict(sess,['../data/img/test.jpg'])
-		writer = tf.summary.FileWriter('./vgg',sess.graph)
-		writer.close()
+		print vgg16.predict_label(sess,['../data/img/test.jpg'])
 
 

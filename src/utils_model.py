@@ -1,7 +1,7 @@
 import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt 
-import os, time
+import os, sys, time
 from scipy import ndimage
 from scipy.misc import imresize, imsave
 
@@ -46,6 +46,8 @@ class Config:
 
 class model(object):
 	def __init__(self):
+		self._config = None
+		self._class_names = None
 		self._parameters = None
 		self._score = None
 		self._loss = None
@@ -66,18 +68,45 @@ class model(object):
 		preds, = sess.run([self._pred], {self._input_placeholder:images, self._dropout_placeholder:1.})
 		return preds
 
-	# You might want to re-define this function for your model
-	def run_epoch(self, sess):
-		pass
+	def predict_label(self, sess, image_path):
+		preds = self.predict(sess, image_path)
+		return [self._class_names[i] for i in preds]
 
 	# You might want to re-define this function for your model
-	def train(self, sess):
-		pass
-		# for i in xrange(self._config.num_epoch):
-		# 	start = time.time()
-		# 	print 'Epoch %d: ' %i
-		# 	self.run_epoch(sess)
-		# 	print 'Elapse Time: {}\n'.format(time.time() - start)
+	def run_epoch(self, sess, X, y, shuffle = True, batch_per_print = 100):
+		start = time.time()
+		num_batches = X.shape[0] / self._config.batch_size
+		idx = np.arange(X.shape[0])
+		if shuffle:
+			np.random.shuffle(idx)
+
+		len_eq = 20
+		batch_per_eq = (num_batches+len_eq-1)/len_eq
+
+		total_loss = []
+		accu = []
+
+		for i in xrange(num_batches):
+			batch_idx = idx[i*self._config.batch_size:(i+1)*self._config.batch_size]
+			X_batch = X[batch_idx]
+			y_batch = y[batch_idx]
+			feed_dict = {self._input_placeholder:X_batch, self._label_placeholder:y_batch, self._dropout_placeholder:self._config.dropout}
+			loss, pred, _ = sess.run([self._loss, self._pred, self._train_op], feed_dict)
+			total_loss.append(loss)
+			accu.append(1.*np.sum(pred==y_batch)/self._config.batch_size)
+			if (i+1)/batch_per_print*batch_per_print == i+1:
+				num_eq = (i+1)/batch_per_eq
+				sys.stdout.write('\r '+str(i+1)+' / '+str(num_batches)+' [' + '='*num_eq + ' '*(len_eq - num_eq) + '] - %0.2fs - loss: %0.4f - acc: %0.4f  '%(float(time.time()-start),float(np.mean(total_loss)),float(np.mean(accu))))
+				sys.stdout.flush()
+		sys.stdout.write('\r '+str(num_batches)+' / '+str(num_batches)+' [' + '='*len_eq + '] - %0.2fs - loss: %0.4f - acc: %0.4f  \n'%(float(time.time()-start),float(np.mean(total_loss)),float(np.mean(accu))))
+		sys.stdout.flush()
+
+	# You might want to re-define this function for your model
+	def train(self, sess, X_train, y_train, X_val, y_val):
+		for i in xrange(self._config.num_epoch):
+			print 'Epoch %d / %d'%(i+1,self._config.num_epoch)
+			self.run_epoch(sess, X_train, y_train)
+			print 'train acc: %0.4f; val acc: %0.4f \n' % (1-self.error(sess, X_train, y_train),1-self.error(sess, X_val, y_val))
 
 	# You might want to re-define this function for your model
 	def error(self, sess, X, y):

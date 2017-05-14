@@ -12,7 +12,7 @@ class model_test(model):
 
 		W = tf.get_variable('W',[10,self._config.num_classes])
 		b = tf.get_variable('b',[self._config.num_classes])
-		self._score = tf.matmul(self._input_placeholder,W)
+		self._score = tf.matmul(self._input_placeholder,W) + b
 		self._parameters['W'] = W
 		self._parameters['b'] = b
 

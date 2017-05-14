@@ -17,7 +17,6 @@ def fetch_data(path = '../data/img', resize = (224,224,3)):
 				image_resized = imresize(image, resize)
 				images.append(image_resized)
 				labels.append(i)
-			break
 	return (np.array(images), np.array(labels), categories)
 
 def prepare_predict_data(file_path, channel_mean = np.array([ 203.89836428,  191.68313589,  180.50212764]), resize = (224,224,3)):
@@ -54,10 +53,11 @@ class model(object):
 		self._pred = None
 		self._train_op = None
 
-	def load_parameters(self, sess, path):
+	def load_parameters(self, sess, path, rand_init = []):
 		parameters = np.load(path)
 		for key in parameters:
-			sess.run(self._parameters[key].assign(parameters[key]))
+			if key not in rand_init:
+				sess.run(self._parameters[key].assign(parameters[key]))
 
 	def save_parameters(self, sess, path):
 		if not os.path.exists(path):

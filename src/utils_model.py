@@ -32,14 +32,18 @@ def fetch_data(path = '../data', resize = (224,224,3), file = False, dtype = '.j
 				cate, num = item.rstrip('\n').split('\t')
 				num_cate.append(int(num))
 				categories.append(cate)
-		labels = np.concatenate([[i] * num_cate[i] for i in range(len(categories))])
+		num_fail = [0] * len(categories)
 		with open(os.path.join(path,'images.txt'), 'r') as f:
 			for i in range(len(categories)):
 				category = categories[i]
 				for j in range(num_cate[i]):
-					image = ndimage.imread(os.path.join(path, 'img', category, f.readline().rstrip('\n')+dtype))
-					image_resized = imresize(image, resize)
+					try:
+						image = ndimage.imread(os.path.join(path, 'img', category, f.readline().rstrip('\n')+dtype))
+						image_resized = imresize(image, resize)
+					except:
+						num_fail[i] += 1
 					images.append(image_resized)
+		labels = np.concatenate([[i] * (num_cate[i]-num_fail[i]) for i in range(len(categories))])
 		return (np.array(images), labels, categories)
 	else:
 		categories = [item for item in os.listdir(os.path.join(path,'img')) if item[0] != '.']
@@ -139,7 +143,7 @@ class model(object):
 
 	# You might want to re-define this function for your model
 	def train(self, sess, X_train, y_train, X_val, y_val):
-		for i in xrange(self._config.num_epoch):
+		for i in range(self._config.num_epoch):
 			print('Epoch %d / %d'%(i+1,self._config.num_epoch))
 			self.run_epoch(sess, X_train, y_train)
 			print('train acc: %0.4f; val acc: %0.4f \n' % (1-self.error(sess, X_train, y_train),1-self.error(sess, X_val, y_val)))

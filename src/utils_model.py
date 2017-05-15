@@ -126,7 +126,7 @@ class model(object):
 		total_loss = []
 		accu = []
 
-		for i in xrange(num_batches):
+		for i in range(num_batches):
 			batch_idx = idx[i*self._config.batch_size:(i+1)*self._config.batch_size]
 			X_batch = X[batch_idx]
 			y_batch = y[batch_idx]

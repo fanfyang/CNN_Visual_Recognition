@@ -135,7 +135,7 @@ class model(object):
 			batch_idx = idx[i*self._config.batch_size:(i+1)*self._config.batch_size]
 			X_batch = X[batch_idx]
 			y_batch = y[batch_idx]
-			feed_dict = {self._input_placeholder:X_batch, self._label_placeholder:y_batch, self._dropout_placeholder:self._config.dropout}
+			feed_dict = {self._input_placeholder:X_batch, self._label_placeholder:y_batch, self._dropout_placeholder:self._config.dropout, self._is_training_placeholder:True}
 			loss, pred, _ = sess.run([self._loss, self._pred, self._train_op], feed_dict)
 			total_loss.append(loss)
 			accu.append(1.*np.sum(pred==y_batch)/self._config.batch_size)
@@ -154,15 +154,15 @@ class model(object):
 			print('train acc: %0.4f; val acc: %0.4f \n' % (1-self.error(sess, X_train, y_train),1-self.error(sess, X_val, y_val)))
 
 	# You might want to re-define this function for your model
-	def error(self, sess, X, y):
+	def error(self, sess, X, y, is_training = False):
 		num_batches = X.shape[0] // self._config.batch_size
 		num_correct = 0
 		for i in range(num_batches):
-			feed_dict = {self._input_placeholder: X[i*self._config.batch_size:(i+1)*self._config.batch_size], self._dropout_placeholder:1.0}
+			feed_dict = {self._input_placeholder: X[i*self._config.batch_size:(i+1)*self._config.batch_size], self._dropout_placeholder:1.0, self._is_training_placeholder:is_training}
 			pred = sess.run(self._pred, feed_dict)
 			label = y[i*self._config.batch_size:(i+1)*self._config.batch_size]
 			num_correct += np.sum(pred == label)
-		feed_dict = {self._input_placeholder: X[num_batches*self._config.batch_size:], self._dropout_placeholder:1.0}
+		feed_dict = {self._input_placeholder: X[num_batches*self._config.batch_size:], self._dropout_placeholder:1.0, self._is_training_placeholder:is_training}
 		pred = sess.run(self._pred, feed_dict)
 		label = y[num_batches*self._config.batch_size:]
 		num_correct += np.sum(pred == label)

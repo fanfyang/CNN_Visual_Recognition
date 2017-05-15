@@ -29,7 +29,7 @@ def fetch_data(path = '../data', resize = (224,224,3), file = False, dtype = '.j
 			num_cate = []
 			categories = []
 			for item in temp.rstirp('\n'):
-				num, cate = item.split('\t')
+				cate, num = item.split('\t')
 				num_cate.append(int(num))
 				categories.append(cate)
 		labels = np.concatenate([[i] * num_cate[i] for i in range(len(categories))])

@@ -184,9 +184,9 @@ class model_vgg16(model):
 		self._train_op = optimizer.minimize(self._loss)
 
 class model_vgg16_20(model):
-	def __init__(self):
+	def __init__(self, config):
 		self._config_pic = Config_Pic()
-		self._config = Config(num_classes = 20)
+		self._config = config
 
 		self._input_placeholder = tf.placeholder(dtype = tf.float32, shape = (None, self._config_pic.height, self._config_pic.width, self._config_pic.channels))
 		self._label_placeholder = tf.placeholder(dtype = tf.int32, shape = (None,))
@@ -363,7 +363,9 @@ class model_vgg16_20(model):
 		self._train_op = optimizer.minimize(self._loss)
 
 if __name__ == '__main__':
-	vgg16 = model_vgg16()
+	config = Config(num_classes = 20)
+	vgg16 = model_vgg16_20(config)
+	sess = tf.Session()
 	with tf.Session() as sess:
 		vgg16.load_parameters(sess,'../data/vgg16/vgg16_weights.npz')
 		print(vgg16.predict_label(sess,['../data/img/test.jpg']))

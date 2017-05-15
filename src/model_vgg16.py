@@ -332,7 +332,10 @@ class model_vgg16_20(model):
 			pool5_reshape = tf.reshape(pool5, [-1,25088])
 			Wfc6 = tf.get_variable('W',[25088,4096], trainable = True)
 			bfc6 = tf.get_variable('b',[4096], trainable = True)
-			fc6 = tf.nn.dropout(tf.nn.relu(tf.matmul(pool5_reshape, Wfc6) + bfc6), self._dropout_placeholder, name = 'fc6')
+			fc6 = tf.nn.relu(tf.matmul(pool5_reshape, Wfc6) + bfc6, name = 'fc6')
+			if self._config.use_batch_norm:
+				fc6 = tf.layers.batch_normalization(inputs = fc6, scale = True, center = True, training = is_training, trainable = True)
+			fc6 = tf.nn.dropout(fc6, self._dropout_placeholder)
 			self._parameters['fc6_W'] = Wfc6
 			self._parameters['fc6_b'] = bfc6
 			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wfc6)))
@@ -340,7 +343,10 @@ class model_vgg16_20(model):
 		with tf.variable_scope('vgg16_20/fc7') as scope:
 			Wfc7 = tf.get_variable('W',[4096,4096], trainable = True)
 			bfc7 = tf.get_variable('b',[4096], trainable = True)
-			fc7 = tf.nn.dropout(tf.nn.relu(tf.matmul(fc6, Wfc7) + bfc7), self._dropout_placeholder, name = 'fc7')
+			fc7 = tf.nn.relu(tf.matmul(fc6, Wfc7) + bfc7, name = 'fc7')
+			if self._config.use_batch_norm:
+				fc7 = tf.layers.batch_normalization(inputs = fc7, scale = True, center = True, training = is_training, trainable = True)
+			fc7 = tf.nn.dropout(fc7, self._dropout_placeholder)
 			self._parameters['fc7_W'] = Wfc7
 			self._parameters['fc7_b'] = bfc7
 			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wfc7)))
@@ -364,18 +370,3 @@ class model_vgg16_20(model):
 
 		optimizer = tf.train.AdamOptimizer(lr)
 		self._train_op = optimizer.minimize(self._loss)
-
-if __name__ == '__main__':
-	config = Config(num_classes = 20, batch_size = 10, lr = 0.001, l2 = 0.0)
-	vgg = model_vgg16_20(config)
-
-	x,y,z = fetch_data(file = True)
-	X_train = x[:700]
-	X_val = x[700:]
-	y_train = y[:700]
-	y_val = y[700:]
-
-	sess = tf.Session()
-	sess.run(tf.global_variables_initializer())
-	vgg.load_parameters(sess,'../data/vgg16/vgg16_weights.npz',rand_init = ['fc8_W', 'fc8_b'])
-	vgg.train(sess,X_train,y_train,X_val,y_val)

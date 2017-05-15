@@ -44,7 +44,9 @@ def fetch_data(path = '../data', resize = (224,224,3), file = False, dtype = '.j
 						num_fail[i] += 1
 					images.append(image_resized)
 		labels = np.concatenate([[i] * (num_cate[i]-num_fail[i]) for i in range(len(categories))])
-		return (np.array(images), labels, categories)
+		idx = np.arange(len(labels))
+		np.random.shuffle(idx)
+		return (np.array(images)[idx], labels[idx], categories)
 	else:
 		categories = [item for item in os.listdir(os.path.join(path,'img')) if item[0] != '.']
 		for i in range(len(categories)):
@@ -150,8 +152,15 @@ class model(object):
 
 	# You might want to re-define this function for your model
 	def error(self, sess, X, y):
-		feed_dict = {self._input_placeholder: X, self._dropout_placeholder:1.0}
+		num_batches = X.shape[0] // self._config.batch_size
+		num_correct = 0
+		for i in range(num_batches):
+			feed_dict = {self._input_placeholder: X[i*self._config.batch_size:(i+1)*self._config.batch_size], self._dropout_placeholder:1.0}
+			pred = sess.run(self._pred, feed_dict)
+			label = y[i*self._config.batch_size:(i+1)*self._config.batch_size]
+			num_correct += np.sum(pred == label)
+		feed_dict = {self._input_placeholder: X[num_batches*self._config.batch_size:], self._dropout_placeholder:1.0}
 		pred = sess.run(self._pred, feed_dict)
-		num = X.shape[0]
-		num_correct = np.sum(pred == y)
-		return 1 - num_correct * 1.0 / num
+		label = y[num_batches*self._config.batch_size:]
+		num_correct += np.sum(pred == label)
+		return 1 - num_correct * 1.0 / X.shape[0]

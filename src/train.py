@@ -1,3 +1,5 @@
+from model_vgg16 import *
+
 config = Config(num_classes = 20, batch_size = 70, lr = 0.001, l2 = 0.0)
 vgg = model_vgg16_20(config)
 

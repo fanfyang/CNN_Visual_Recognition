@@ -359,15 +359,23 @@ class model_vgg16_20(model):
 		for reg in tf.get_collection("Reg"):
 			self._loss += 0.5 * self._config.l2 * reg
 
-		optimizer = tf.train.AdamOptimizer(self._config.lr)
+		self._global_step = tf.Variable(0, trainable = False)
+		lr = tf.train.exponential_decay(self._config.lr, decay_rate = self._config.decay_rate, global_step = self._global_step, decay_steps = self._config.decay_steps)
+
+		optimizer = tf.train.AdamOptimizer(lr)
 		self._train_op = optimizer.minimize(self._loss)
 
 if __name__ == '__main__':
-	config = Config(num_classes = 20)
+	config = Config(num_classes = 20, batch_size = 10, lr = 0.001, l2 = 0.0)
 	vgg16 = model_vgg16_20(config)
+
+	x,y,z = fetch_data(file = True)
+	X_train = x[:700]
+	X_val = x[700:]
+	y_train = y[:700]
+	y_val = y[700:]
+
 	sess = tf.Session()
-	with tf.Session() as sess:
-		vgg16.load_parameters(sess,'../data/vgg16/vgg16_weights.npz')
-		print(vgg16.predict_label(sess,['../data/img/test.jpg']))
-
-
+	sess.run(tf.global_variables_initializer())
+	vgg.load_parameters(sess,'../data/vgg16/vgg16_weights.npz',rand_init = ['fc8_W', 'fc8_b'])
+	vgg.train(sess,X_train,y_train,X_val,y_val)

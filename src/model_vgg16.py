@@ -367,7 +367,7 @@ class model_vgg16_20(model):
 
 if __name__ == '__main__':
 	config = Config(num_classes = 20, batch_size = 10, lr = 0.001, l2 = 0.0)
-	vgg16 = model_vgg16_20(config)
+	vgg = model_vgg16_20(config)
 
 	x,y,z = fetch_data(file = True)
 	X_train = x[:700]

@@ -136,9 +136,9 @@ class model(object):
 	# You might want to re-define this function for your model
 	def train(self, sess, X_train, y_train, X_val, y_val):
 		for i in xrange(self._config.num_epoch):
-			print 'Epoch %d / %d'%(i+1,self._config.num_epoch)
+			print('Epoch %d / %d'%(i+1,self._config.num_epoch))
 			self.run_epoch(sess, X_train, y_train)
-			print 'train acc: %0.4f; val acc: %0.4f \n' % (1-self.error(sess, X_train, y_train),1-self.error(sess, X_val, y_val))
+			print('train acc: %0.4f; val acc: %0.4f \n' % (1-self.error(sess, X_train, y_train),1-self.error(sess, X_val, y_val)))
 
 	# You might want to re-define this function for your model
 	def error(self, sess, X, y):

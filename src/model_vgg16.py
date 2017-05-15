@@ -366,6 +366,6 @@ if __name__ == '__main__':
 	vgg16 = model_vgg16()
 	with tf.Session() as sess:
 		vgg16.load_parameters(sess,'../data/vgg16/vgg16_weights.npz')
-		print vgg16.predict_label(sess,['../data/img/test.jpg'])
+		print(vgg16.predict_label(sess,['../data/img/test.jpg']))
 
 

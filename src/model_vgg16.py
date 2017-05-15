@@ -191,6 +191,7 @@ class model_vgg16_20(model):
 		self._input_placeholder = tf.placeholder(dtype = tf.float32, shape = (None, self._config_pic.height, self._config_pic.width, self._config_pic.channels))
 		self._label_placeholder = tf.placeholder(dtype = tf.int32, shape = (None,))
 		self._dropout_placeholder = tf.placeholder(dtype = tf.float32)
+		self._is_training_placeholder = tf.placeholder(dtype = tf.bool)
 
 		self._channel_mean = np.array([ 203.89836428,  191.68313589,  180.50212764])
 		# self._class_names = class_names
@@ -334,7 +335,7 @@ class model_vgg16_20(model):
 			bfc6 = tf.get_variable('b',[4096], trainable = True)
 			fc6 = tf.nn.relu(tf.matmul(pool5_reshape, Wfc6) + bfc6, name = 'fc6')
 			if self._config.use_batch_norm:
-				fc6 = tf.layers.batch_normalization(inputs = fc6, scale = True, center = True, training = is_training, trainable = True)
+				fc6 = tf.layers.batch_normalization(inputs = fc6, scale = True, center = True, training = self._is_training_placeholder, trainable = True)
 			fc6 = tf.nn.dropout(fc6, self._dropout_placeholder)
 			self._parameters['fc6_W'] = Wfc6
 			self._parameters['fc6_b'] = bfc6
@@ -345,7 +346,7 @@ class model_vgg16_20(model):
 			bfc7 = tf.get_variable('b',[4096], trainable = True)
 			fc7 = tf.nn.relu(tf.matmul(fc6, Wfc7) + bfc7, name = 'fc7')
 			if self._config.use_batch_norm:
-				fc7 = tf.layers.batch_normalization(inputs = fc7, scale = True, center = True, training = is_training, trainable = True)
+				fc7 = tf.layers.batch_normalization(inputs = fc7, scale = True, center = True, training = self._is_training_placeholder, trainable = True)
 			fc7 = tf.nn.dropout(fc7, self._dropout_placeholder)
 			self._parameters['fc7_W'] = Wfc7
 			self._parameters['fc7_b'] = bfc7

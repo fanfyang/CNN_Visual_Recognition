@@ -15,9 +15,8 @@ def prepare_train_data(num_per_cate = 50000, path = '../data', dtype = '.jpg'):
 		for i in range(len(categories)):
 			category = categories[i]
 			images = [item for item in os.listdir(os.path.join(path, 'img', category)) if item.endswith(dtype)]
-			images = images * ((num_per_cate-1)//len(images)+1)
 			np.random.shuffle(images)
-			for j in range(num_per_cate):
+			for j in range(min(num_per_cate,len(images))):
 				f.write(images[j].rstrip(dtype)+'\n')
 
 def fetch_data(path = '../data', resize = (224,224,3), file = False, dtype = '.jpg'):

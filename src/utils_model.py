@@ -5,20 +5,49 @@ import os, sys, time
 from scipy import ndimage
 from scipy.misc import imresize, imsave
 
-def fetch_data(path = '../data/img', resize = (224,224,3)):
+def prepare_train_data(num_per_cate = 50000, path = '../data', dtype = '.jpg'):
+	categories = [item for item in os.listdir(os.path.join(path, 'img')) if item[0] != '.' and item != 'Gift Cards Store' and item != 'Office Products']
+	with open(os.path.join(path, 'categories.txt'), 'w') as f:
+		f.write('%d\n' % (num_per_cate))
+		for cate in categories:
+			f.write(cate+'\n')
+	with open(os.path.join(path, 'images.txt'), 'w') as f:
+		for i in range(len(categories)):
+			category = categories[i]
+			images = [item for item in os.listdir(os.path.join(path, 'img', category)) if item.endswith(dtype)]
+			images = images * ((num_per_cate-1)/len(images)+1)
+			np.random.shuffle(images)
+			for j in range(num_per_cate):
+				f.write(images[j].rstrip(dtype)+'\n')
+
+def fetch_data(path = '../data', resize = (224,224,3), file = False, dtype = '.jpg'):
 	images = list()
 	labels = list()
-	categories = [item for item in os.listdir(path) if item[0] != '.']
-	for i in range(len(categories)):
-		category = categories[i]
-		for item in os.listdir(os.path.join(path, category)):
-			if item.endswith('.jpg'):
-				image = ndimage.imread(os.path.join(path, category, item))
-				image_resized = imresize(image, resize)
-				images.append(image_resized)
-				labels.append(i)
-			break
-	return (np.array(images), np.array(labels), categories)
+	if file == True:
+		with open(os.path.join(path,'categories.txt'), 'r') as f:
+			temp = f.readlines()
+			num_per_cate = int(temp[0])
+			categories = [item.rstrip('\n') for item in temp[1:]]
+		labels = np.concatenate([[i] * num_per_cate for i in range(len(categories))])
+		with open(os.path.join(path,'images.txt'), 'r') as f:
+			for i in range(len(categories)):
+				category = categories[i]
+				for j in range(num_per_cate):
+					image = ndimage.imread(os.path.join(path, 'img', category, f.readline().rstrip('\n')+dtype))
+					image_resized = imresize(image, resize)
+					images.append(image_resized)
+		return (np.array(images), labels, categories)
+	else:
+		categories = [item for item in os.listdir(os.path.join(path,'img')) if item[0] != '.']
+		for i in range(len(categories)):
+			category = categories[i]
+			for item in os.listdir(os.path.join(path, 'img', category)):
+				if item.endswith('.jpg'):
+					image = ndimage.imread(os.path.join(path, 'img', category, item))
+					image_resized = imresize(image, resize)
+					images.append(image_resized)
+					labels.append(i)
+		return (np.array(images), np.array(labels), categories)
 
 def prepare_predict_data(file_path, channel_mean = np.array([ 203.89836428,  191.68313589,  180.50212764]), resize = (224,224,3)):
 	num = len(file_path)
@@ -54,10 +83,11 @@ class model(object):
 		self._pred = None
 		self._train_op = None
 
-	def load_parameters(self, sess, path):
+	def load_parameters(self, sess, path, rand_init = []):
 		parameters = np.load(path)
 		for key in parameters:
-			sess.run(self._parameters[key].assign(parameters[key]))
+			if key not in rand_init:
+				sess.run(self._parameters[key].assign(parameters[key]))
 
 	def save_parameters(self, sess, path):
 		if not os.path.exists(path):

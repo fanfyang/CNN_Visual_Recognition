@@ -75,8 +75,10 @@ class Config_Pic:
 		self.channels = channels
 
 class Config:
-	def __init__(self, lr = 0.025, l2 = 0.0005, batch_size = 30, num_epoch = 20, dropout = 0.5, num_classes = 1000):
+	def __init__(self, lr = 0.025, decay_rate = 0.9, decay_steps = 700, l2 = 0.0005, batch_size = 30, num_epoch = 20, dropout = 0.5, num_classes = 1000):
 		self.lr = lr
+		self.decay_rate = decay_rate
+		self.decay_steps = decay_steps
 		self.l2 = l2
 		self.batch_size = batch_size
 		self.num_epoch = num_epoch

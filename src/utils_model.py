@@ -7,10 +7,7 @@ from scipy.misc import imresize, imsave
 
 def prepare_train_data(num_per_cate = 50000, path = '../data', dtype = '.jpg'):
 	categories = [item for item in os.listdir(os.path.join(path, 'img')) if item[0] != '.' and item != 'Gift Cards Store' and item != 'Office Products']
-	with open(os.path.join(path, 'categories.txt'), 'w') as f:
-		f.write('%d\n' % (num_per_cate))
-		for cate in categories:
-			f.write(cate+'\n')
+	num_cate = []
 	with open(os.path.join(path, 'images.txt'), 'w') as f:
 		for i in range(len(categories)):
 			category = categories[i]
@@ -18,6 +15,10 @@ def prepare_train_data(num_per_cate = 50000, path = '../data', dtype = '.jpg'):
 			np.random.shuffle(images)
 			for j in range(min(num_per_cate,len(images))):
 				f.write(images[j].rstrip(dtype)+'\n')
+			num_cate.append(min(num_per_cate,len(images)))
+	with open(os.path.join(path, 'categories.txt'), 'w') as f:
+		for i in range(len(categories)):
+			f.write(categories[i]+'\t%d\n'%(num_cate[i]))
 
 def fetch_data(path = '../data', resize = (224,224,3), file = False, dtype = '.jpg'):
 	images = list()
@@ -25,13 +26,17 @@ def fetch_data(path = '../data', resize = (224,224,3), file = False, dtype = '.j
 	if file == True:
 		with open(os.path.join(path,'categories.txt'), 'r') as f:
 			temp = f.readlines()
-			num_per_cate = int(temp[0])
-			categories = [item.rstrip('\n') for item in temp[1:]]
-		labels = np.concatenate([[i] * num_per_cate for i in range(len(categories))])
+			num_cate = []
+			categories = []
+			for item in temp.rstirp('\n'):
+				num, cate = item.split('\t')
+				num_cate.append(int(num))
+				categories.append(cate)
+		labels = np.concatenate([[i] * num_cate[i] for i in range(len(categories))])
 		with open(os.path.join(path,'images.txt'), 'r') as f:
 			for i in range(len(categories)):
 				category = categories[i]
-				for j in range(num_per_cate):
+				for j in range(num_cate[i]):
 					image = ndimage.imread(os.path.join(path, 'img', category, f.readline().rstrip('\n')+dtype))
 					image_resized = imresize(image, resize)
 					images.append(image_resized)

@@ -1,6 +1,6 @@
 import numpy as np
 import tensorflow as tf
-import matplotlib.pyplot as plt 
+#import matplotlib.pyplot as plt 
 import os, sys, time
 from scipy import ndimage
 from scipy.misc import imresize, imsave
@@ -15,7 +15,7 @@ def prepare_train_data(num_per_cate = 50000, path = '../data', dtype = '.jpg'):
 		for i in range(len(categories)):
 			category = categories[i]
 			images = [item for item in os.listdir(os.path.join(path, 'img', category)) if item.endswith(dtype)]
-			images = images * ((num_per_cate-1)/len(images)+1)
+			images = images * ((num_per_cate-1)//len(images)+1)
 			np.random.shuffle(images)
 			for j in range(num_per_cate):
 				f.write(images[j].rstrip(dtype)+'\n')
@@ -107,13 +107,13 @@ class model(object):
 	# You might want to re-define this function for your model
 	def run_epoch(self, sess, X, y, shuffle = True, batch_per_print = 100):
 		start = time.time()
-		num_batches = X.shape[0] / self._config.batch_size
+		num_batches = X.shape[0] // self._config.batch_size
 		idx = np.arange(X.shape[0])
 		if shuffle:
 			np.random.shuffle(idx)
 
 		len_eq = 20
-		batch_per_eq = (num_batches+len_eq-1)/len_eq
+		batch_per_eq = (num_batches+len_eq-1)//len_eq
 
 		total_loss = []
 		accu = []
@@ -127,7 +127,7 @@ class model(object):
 			total_loss.append(loss)
 			accu.append(1.*np.sum(pred==y_batch)/self._config.batch_size)
 			if (i+1)/batch_per_print*batch_per_print == i+1:
-				num_eq = (i+1)/batch_per_eq
+				num_eq = (i+1)//batch_per_eq
 				sys.stdout.write('\r '+str(i+1)+' / '+str(num_batches)+' [' + '='*num_eq + ' '*(len_eq - num_eq) + '] - %0.2fs - loss: %0.4f - acc: %0.4f  '%(float(time.time()-start),float(np.mean(total_loss)),float(np.mean(accu))))
 				sys.stdout.flush()
 		sys.stdout.write('\r '+str(num_batches)+' / '+str(num_batches)+' [' + '='*len_eq + '] - %0.2fs - loss: %0.4f - acc: %0.4f  \n'%(float(time.time()-start),float(np.mean(total_loss)),float(np.mean(accu))))

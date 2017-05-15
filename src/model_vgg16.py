@@ -203,7 +203,7 @@ class model_vgg16_20(model):
 			relu1_1 = tf.nn.relu(conv1_1, name = 'relu1_1')
 			self._parameters['conv1_1_W'] = Wconv1_1
 			self._parameters['conv1_1_b'] = bconv1_1
-			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv1_1)))
+			# tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv1_1)))
 
 		with tf.variable_scope('vgg16_20/conv1_2') as scope:
 			Wconv1_2 = tf.get_variable('W', [3,3,64,64], trainable = False)
@@ -212,7 +212,7 @@ class model_vgg16_20(model):
 			relu1_2 = tf.nn.relu(conv1_2, name = 'relu1_2')
 			self._parameters['conv1_2_W'] = Wconv1_2
 			self._parameters['conv1_2_b'] = bconv1_2
-			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv1_2)))
+			# tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv1_2)))
 
 		with tf.variable_scope('vgg16_20/pool1') as scope:
 			pool1 = tf.nn.max_pool(relu1_2, [1,2,2,1], [1,2,2,1], padding = 'VALID', name = 'pool')
@@ -224,7 +224,7 @@ class model_vgg16_20(model):
 			relu2_1 = tf.nn.relu(conv2_1, name = 'relu2_1')
 			self._parameters['conv2_1_W'] = Wconv2_1
 			self._parameters['conv2_1_b'] = bconv2_1
-			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv2_1)))
+			# tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv2_1)))
 
 		with tf.variable_scope('vgg16_20/conv2_2') as scope:
 			Wconv2_2 = tf.get_variable('W', [3,3,128,128], trainable = False)
@@ -233,7 +233,7 @@ class model_vgg16_20(model):
 			relu2_2 = tf.nn.relu(conv2_2, name = 'relu2_2')
 			self._parameters['conv2_2_W'] = Wconv2_2
 			self._parameters['conv2_2_b'] = bconv2_2
-			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv2_2)))
+			# tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv2_2)))
 
 		with tf.variable_scope('vgg16_20/pool2') as scope:
 			pool2 = tf.nn.max_pool(relu2_2, [1,2,2,1], [1,2,2,1], padding = 'VALID', name = 'pool')
@@ -245,7 +245,7 @@ class model_vgg16_20(model):
 			relu3_1 = tf.nn.relu(conv3_1, name = 'relu3_1')
 			self._parameters['conv3_1_W'] = Wconv3_1
 			self._parameters['conv3_1_b'] = bconv3_1
-			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv3_1)))
+			# tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv3_1)))
 
 		with tf.variable_scope('vgg16_20/conv3_2') as scope:
 			Wconv3_2 = tf.get_variable('W',[3,3,256,256], trainable = False)
@@ -254,7 +254,7 @@ class model_vgg16_20(model):
 			relu3_2 = tf.nn.relu(conv3_2, name = 'relu3_2')
 			self._parameters['conv3_2_W'] = Wconv3_2
 			self._parameters['conv3_2_b'] = bconv3_2
-			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv3_2)))
+			# tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv3_2)))
 
 		with tf.variable_scope('vgg16_20/conv3_3') as scope:
 			Wconv3_3 = tf.get_variable('W',[3,3,256,256], trainable = False)
@@ -263,7 +263,7 @@ class model_vgg16_20(model):
 			relu3_3 = tf.nn.relu(conv3_3, name = 'relu3_3')
 			self._parameters['conv3_3_W'] = Wconv3_3
 			self._parameters['conv3_3_b'] = bconv3_3
-			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv3_3)))
+			# tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv3_3)))
 
 		with tf.variable_scope('vgg16_20/pool3') as scope:
 			pool3 = tf.nn.max_pool(relu3_3, [1,2,2,1], [1,2,2,1], padding = 'VALID', name = 'pool')
@@ -275,7 +275,7 @@ class model_vgg16_20(model):
 			relu4_1 = tf.nn.relu(conv4_1, name = 'relu4_1')
 			self._parameters['conv4_1_W'] = Wconv4_1
 			self._parameters['conv4_1_b'] = bconv4_1
-			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv4_1)))
+			# tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv4_1)))
 
 		with tf.variable_scope('vgg16_20/conv4_2') as scope:
 			Wconv4_2 = tf.get_variable('W',[3,3,512,512], trainable = False)
@@ -284,7 +284,7 @@ class model_vgg16_20(model):
 			relu4_2 = tf.nn.relu(conv4_2, name = 'relu4_2')
 			self._parameters['conv4_2_W'] = Wconv4_2
 			self._parameters['conv4_2_b'] = bconv4_2
-			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv4_2)))
+			# tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv4_2)))
 
 		with tf.variable_scope('vgg16_20/conv4_3') as scope:
 			Wconv4_3 = tf.get_variable('W',[3,3,512,512], trainable = False)
@@ -293,7 +293,7 @@ class model_vgg16_20(model):
 			relu4_3 = tf.nn.relu(conv4_3, name = 'relu4_3')
 			self._parameters['conv4_3_W'] = Wconv4_3
 			self._parameters['conv4_3_b'] = bconv4_3
-			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv4_3)))
+			# tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv4_3)))
 
 		with tf.variable_scope('vgg16_20/pool4') as scope:
 			pool4 = tf.nn.max_pool(relu4_3, [1,2,2,1], [1,2,2,1], padding = 'VALID', name = 'pool')
@@ -305,7 +305,7 @@ class model_vgg16_20(model):
 			relu5_1 = tf.nn.relu(conv5_1, name = 'relu5_1')
 			self._parameters['conv5_1_W'] = Wconv5_1
 			self._parameters['conv5_1_b'] = bconv5_1
-			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv5_1)))
+			# tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv5_1)))
 
 		with tf.variable_scope('vgg16_20/conv5_2') as scope:
 			Wconv5_2 = tf.get_variable('W',[3,3,512,512], trainable = False)
@@ -314,7 +314,7 @@ class model_vgg16_20(model):
 			relu5_2 = tf.nn.relu(conv5_2, name = 'relu5_2')
 			self._parameters['conv5_2_W'] = Wconv5_2
 			self._parameters['conv5_2_b'] = bconv5_2
-			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv5_2)))
+			# tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv5_2)))
 
 		with tf.variable_scope('vgg16_20/conv5_3') as scope:
 			Wconv5_3 = tf.get_variable('W',[3,3,512,512], trainable = False)
@@ -323,7 +323,7 @@ class model_vgg16_20(model):
 			relu5_3 = tf.nn.relu(conv5_3, name = 'relu5_3')
 			self._parameters['conv5_3_W'] = Wconv5_3
 			self._parameters['conv5_3_b'] = bconv5_3
-			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv5_3)))
+			# tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv5_3)))
 
 		with tf.variable_scope('vgg16_20/pool5') as scope:
 			pool5 = tf.nn.max_pool(relu5_3, [1,2,2,1], [1,2,2,1], padding = 'VALID', name = 'pool')

@@ -14,7 +14,6 @@ start = time.time()
 N = 3400000
 count = 0
 count_per_print = num_download / 25
-# with open('../data/small_data.csv','r') as csvfile:
 with open('../data/imUrl.csv','r') as csvfile:
 	reader = csv.reader(csvfile)
 	for row in reader:

@@ -62,7 +62,7 @@ def fetch_data(path = '../data', resize = (224,224,3), file = False, dtype = '.j
 		return (np.array(images,dtype=np.float32), np.array(labels), categories)
 
 def fetch_data_2(path = '../data', dtype = '.jpg', cate_file = 'categories.txt', image_file = 'images.txt'):
-	mages = list()
+	images = list()
 	labels = list()
 	with open(os.path.join(path, cate_file), 'r') as f:
 		temp = f.readlines()

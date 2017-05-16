@@ -19,8 +19,8 @@ class model_alexNet(model):
 		self._parameters = dict()
 
 		with tf.variable_scope('alexNet/conv1') as scope:
-			Wconv1 = tf.get_variable('W', [11,11,self._config_pic.channels, 96], trainable = True)
-			bconv1 = tf.get_variable('b', [96], trainable = True)
+			Wconv1 = tf.get_variable('W', [11,11,self._config_pic.channels, 96], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
+			bconv1 = tf.get_variable('b', [96], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
 			conv1 = tf.nn.conv2d(self._input_placeholder, Wconv1, [1,4,4,1], padding = 'VALID') + bconv1
 			relu1 = tf.nn.relu(conv1_1, name = 'relu1')
 			self._parameters['conv1_W'] = Wconv1
@@ -30,10 +30,13 @@ class model_alexNet(model):
 		with tf.variable_scope('alexNet/pool1') as scope:
 			pool1 = tf.nn.max_pool(relu1, [1,3,3,1], [1,2,2,1], padding = 'VALID', name = 'pool')
 
+		with tf.variable_scope('alexNet/bn1') as scope:
+			bn1 = tf.layers.batch_normalization(pool1, trainable = True)			
+
 		with tf.variable_scope('alexNet/conv2') as scope:
-			Wconv2 = tf.get_variable('W', [5,5,96,256], trainable = True)
-			bconv2 = tf.get_variable('b', [256], trainable = True)
-			conv2 = tf.nn.conv2d(pool1, Wconv2, [1,1,1,1], padding = 'SAME') + bconv2
+			Wconv2 = tf.get_variable('W', [5,5,96,256], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
+			bconv2 = tf.get_variable('b', [256], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
+			conv2 = tf.nn.conv2d(bn1, Wconv2, [1,1,1,1], padding = 'SAME') + bconv2
 			relu2 = tf.nn.relu(conv2, name = 'relu2')
 			self._parameters['conv2_W'] = Wconv2
 			self._parameters['conv2_b'] = bconv2
@@ -42,18 +45,21 @@ class model_alexNet(model):
 		with tf.variable_scope('alexNet/pool2') as scope:
 			pool2 = tf.nn.max_pool(relu2, [1,3,3,1], [1,2,2,1], padding = 'VALID', name = 'pool')
 
+		with tf.variable_scope('alexNet/bn1') as scope:
+			bn1 = tf.layers.batch_normalization(pool2, trainable = True)
+
 		with tf.variable_scope('alexNet/conv3') as scope:
-			Wconv3 = tf.get_variable('W', [3,3,256,384], trainable = True)
-			bconv3 = tf.get_variable('b', [384], trainable = True)
-			conv3 = tf.nn.conv2d(pool2, Wconv3, [1,1,1,1], padding = 'SAME') + bconv3
+			Wconv3 = tf.get_variable('W', [3,3,256,384], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
+			bconv3 = tf.get_variable('b', [384], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
+			conv3 = tf.nn.conv2d(bn1, Wconv3, [1,1,1,1], padding = 'SAME') + bconv3
 			relu3 = tf.nn.relu(conv3, name = 'relu3')
 			self._parameters['conv3_W'] = Wconv3
 			self._parameters['conv3_b'] = bconv3
 			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv3)))
 
 		with tf.variable_scope('alexNet/conv4') as scope:
-			Wconv4 = tf.get_variable('W',[3,3,384,384], trainable = True)
-			bconv4 = tf.get_variable('b',[384], trainable = True)
+			Wconv4 = tf.get_variable('W',[3,3,384,384], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
+			bconv4 = tf.get_variable('b',[384], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
 			conv4 = tf.nn.conv2d(relu3, Wconv4, [1,1,1,1], padding = 'SAME') + bconv4
 			relu4 = tf.nn.relu(conv4, name = 'relu4')
 			self._parameters['conv4_W'] = Wconv4
@@ -61,8 +67,8 @@ class model_alexNet(model):
 			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv4)))
 
 		with tf.variable_scope('alexNet/conv5') as scope:
-			Wconv5 = tf.get_variable('W',[3,3,384,256], trainable = True)
-			bconv5 = tf.get_variable('b',[256], trainable = True)
+			Wconv5 = tf.get_variable('W',[3,3,384,256], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
+			bconv5 = tf.get_variable('b',[256], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
 			conv5 = tf.nn.conv2d(relu4, Wconv5, [1,1,1,1], padding = 'SAME') + bconv5
 			relu5 = tf.nn.relu(conv5, name = 'relu5')
 			self._parameters['conv5_W'] = Wconv5
@@ -74,24 +80,24 @@ class model_alexNet(model):
 
 		with tf.variable_scope('alexNet/fc6') as scope:
 			pool3_reshape = tf.reshape(pool3, [-1,25088])
-			Wfc6 = tf.get_variable('W',[25088,4096], trainable = True)
-			bfc6 = tf.get_variable('b',[4096], trainable = True)
+			Wfc6 = tf.get_variable('W',[25088,4096], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
+			bfc6 = tf.get_variable('b',[4096], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
 			fc6 = tf.nn.dropout(tf.nn.relu(tf.matmul(pool3_reshape, Wfc6) + bfc6), self._dropout_placeholder, name = 'fc6')
 			self._parameters['fc6_W'] = Wfc6
 			self._parameters['fc6_b'] = bfc6
 			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wfc6)))
 
 		with tf.variable_scope('alexNet/fc7') as scope:
-			Wfc7 = tf.get_variable('W',[4096,4096], trainable = True)
-			bfc7 = tf.get_variable('b',[4096], trainable = True)
+			Wfc7 = tf.get_variable('W',[4096,4096], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
+			bfc7 = tf.get_variable('b',[4096], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
 			fc7 = tf.nn.dropout(tf.nn.relu(tf.matmul(fc6, Wfc7) + bfc7), self._dropout_placeholder, name = 'fc7')
 			self._parameters['fc7_W'] = Wfc7
 			self._parameters['fc7_b'] = bfc7
 			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wfc7)))
 
 		with tf.variable_scope('alexNet/fc8') as scope:
-			Wfc8 = tf.get_variable('W',[4096,self._config.num_classes], trainable = True)
-			bfc8 = tf.get_variable('b',[self._config.num_classes], trainable = True)
+			Wfc8 = tf.get_variable('W',[4096,self._config.num_classes], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
+			bfc8 = tf.get_variable('b',[self._config.num_classes], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
 			self._score = tf.matmul(fc7, Wfc8) + bfc8
 			self._parameters['fc8_W'] = Wfc8
 			self._parameters['fc8_b'] = bfc8

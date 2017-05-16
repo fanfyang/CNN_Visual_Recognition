@@ -267,7 +267,7 @@ class model(object):
 				feed_dict = {self._input_placeholder: X_batch-self._channel_mean, self._dropout_placeholder:1.0, self._is_training_placeholder:False}
 				pred = sess.run(self._pred, feed_dict)
 				num_correct_val += np.sum(pred == y_batch)
-			print('train acc: %0.4f; val acc: %0.4f \n' % (1.*num_correct_train/N_train,1.*num_correct_val/N_val))
+			print('train acc: %0.4f; val acc: %0.4f \n' % (1.*num_correct_train/N_train, 1.*num_correct_val/N_val))
 
 	# You might want to re-define this function for your model
 	def error(self, sess, X, y, is_training = False):

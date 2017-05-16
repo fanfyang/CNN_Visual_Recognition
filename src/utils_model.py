@@ -93,7 +93,7 @@ def data_generator(images, labels, categories, batch_size, shuffle = True, dtype
 		labels_data = []
 		if i != num_batches:
 			for j in range(batch_size):
-				idx = idxs[i*batch_size+j]
+				idx = idxs[(i-1)*batch_size+j]
 				try:
 					image = ndimage.imread(os.path.join('../data/img', categories[labels[idx]], images[idx]+dtype))
 					image_resized = imresize(image, resize)

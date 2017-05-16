@@ -12,6 +12,7 @@ class model_alexNet(model):
 		self._input_placeholder = tf.placeholder(dtype = tf.float32, shape = (None, self._config_pic.height, self._config_pic.width, self._config_pic.channels))
 		self._label_placeholder = tf.placeholder(dtype = tf.int32, shape = (None,))
 		self._dropout_placeholder = tf.placeholder(dtype = tf.float32)
+		self._is_training_placeholder = tf.placeholder(dtype = tf.bool)
 
 		self._channel_mean = np.array([203.89836428,  191.68313589,  180.50212764])
 		global class_names

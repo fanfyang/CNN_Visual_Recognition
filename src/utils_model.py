@@ -236,7 +236,6 @@ class model(object):
 		len_eq = 20
 		batch_per_eq = (train_batches+len_eq-1)//len_eq
 
-
 		for i in range(self._config.num_epoch):
 			print('Epoch %d / %d'%(i+1,self._config.num_epoch))
 			start = time.time()

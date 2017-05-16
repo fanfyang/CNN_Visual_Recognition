@@ -22,7 +22,7 @@ class model_alexNet(model):
 			Wconv1 = tf.get_variable('W', [11,11,self._config_pic.channels, 96], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
 			bconv1 = tf.get_variable('b', [96], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
 			conv1 = tf.nn.conv2d(self._input_placeholder, Wconv1, [1,4,4,1], padding = 'VALID') + bconv1
-			relu1 = tf.nn.relu(conv1_1, name = 'relu1')
+			relu1 = tf.nn.relu(conv1, name = 'relu1')
 			self._parameters['conv1_W'] = Wconv1
 			self._parameters['conv1_b'] = bconv1
 			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv1)))

@@ -1,9 +1,25 @@
 from model_vgg16 import *
 
-config = Config(num_classes = 20, batch_size = 70, lr = 0.001, l2 = 0.0)
+parser = argparse.ArgumentParser()
+parser.add_argument('--lr', help = 'learning rate')
+parser.add_argument('--dr', help = 'decay_rate')
+parser.add_argument('--ds', help = 'decay steps')
+parser.add_argument('--l2', help = 'regularization')
+parser.add_argument('--bs', help = 'batch size')
+parser.add_argument('--ne', help = 'number of epoches')
+parser.add_argument('--d', help = 'droupout')
+parser.add_argument('--nc', help = 'number of classes')
+parser.add_argument('--bn', help = 'batch normalization')
+args = parser.parse_args()
+
+para = parse_argument(args)
+
+config = Config(**para)
+# config = Config(num_classes = 20, batch_size = 70, lr = 0.001, l2 = 0.0)
 vgg = model_vgg16_20(config)
 
 x,y,z = fetch_data(file = True)
+x -= vgg._channel_mean
 X_train = x[:700]
 X_val = x[700:]
 y_train = y[:700]

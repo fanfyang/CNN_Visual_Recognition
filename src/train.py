@@ -41,4 +41,4 @@ y_val = y[700:]
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 vgg.load_parameters(sess,'../data/vgg16/vgg16_weights.npz',rand_init = ['fc8_W', 'fc8_b'])
-vgg.train(sess,X_train,y_train,X_val,y_val,z)
+vgg.train_2(sess,X_train,y_train,X_val,y_val,z)

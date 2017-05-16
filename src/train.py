@@ -33,10 +33,13 @@ vgg = model_vgg16_20(config)
 
 # Example 2
 x,y,z = fetch_data_2(cate_file = 'categories.txt', image_file = 'images.txt')
-X_train = x[:700]
-X_val = x[700:]
-y_train = y[:700]
-y_val = y[700:]
+N = y.shape[0]
+N_train = N // 10 * 7
+N_val = N // 10 * 9
+X_train = x[:N_train]
+X_val = x[N_train:N_val]
+y_train = y[:N_train]
+y_val = y[N_train:N_val]
 
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())

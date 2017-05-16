@@ -244,7 +244,7 @@ class model(object):
 			accu = []
 
 			for j in range(train_batches):
-				X_batch, y_batch = g_train.next()
+				X_batch, y_batch = next(g_train)
 				feed_dict = {self._input_placeholder:X_batch-self._channel_mean, self._label_placeholder:y_batch, self._dropout_placeholder:self._config.dropout, self._is_training_placeholder:True}
 				loss, pred, _ = sess.run([self._loss, self._pred, self._train_op], feed_dict)
 				total_loss.append(loss)
@@ -259,12 +259,12 @@ class model(object):
 			num_correct_train = 0
 			num_correct_val = 0
 			for _ in range(train_batches):
-				X_batch, y_batch = g_train.next()
+				X_batch, y_batch = next(g_train)
 				feed_dict = {self._input_placeholder: X_batch-self._channel_mean, self._dropout_placeholder:1.0, self._is_training_placeholder:False}
 				pred = sess.run(self._pred, feed_dict)
 				num_correct_train += np.sum(pred == y_batch)
 			for _ in range(train_batches):
-				X_batch, y_batch = g_val.next()
+				X_batch, y_batch = next(g_val)
 				feed_dict = {self._input_placeholder: X_batch-self._channel_mean, self._dropout_placeholder:1.0, self._is_training_placeholder:False}
 				pred = sess.run(self._pred, feed_dict)
 				num_correct_val += np.sum(pred == y_batch)

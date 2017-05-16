@@ -48,7 +48,7 @@ def fetch_data(path = '../data', resize = (224,224,3), file = False, dtype = '.j
 		labels = np.concatenate([[i] * (num_cate[i]-num_fail[i]) for i in range(len(categories))])
 		idx = np.arange(len(labels))
 		np.random.shuffle(idx)
-		return (np.array(images)[idx], labels[idx], categories)
+		return (np.array(images,dtype=np.float32)[idx], labels[idx], categories)
 	else:
 		categories = [item for item in os.listdir(os.path.join(path,'img')) if item[0] != '.']
 		for i in range(len(categories)):
@@ -59,7 +59,7 @@ def fetch_data(path = '../data', resize = (224,224,3), file = False, dtype = '.j
 					image_resized = imresize(image, resize)
 					images.append(image_resized)
 					labels.append(i)
-		return (np.array(images), np.array(labels), categories)
+		return (np.array(images,dtype=np.float32), np.array(labels), categories)
 
 def prepare_predict_data(file_path, channel_mean = np.array([ 203.89836428,  191.68313589,  180.50212764]), resize = (224,224,3)):
 	num = len(file_path)

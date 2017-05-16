@@ -43,5 +43,5 @@ y_val = y[N_train:N_val]
 
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
-alex.load_parameters(sess,'../data/vgg16/vgg16_weights.npz',rand_init = ['fc8_W', 'fc8_b'])
+# alex.load_parameters(sess,'../data/vgg16/vgg16_weights.npz',rand_init = ['fc8_W', 'fc8_b'])
 alex.train_2(sess,X_train,y_train,X_val,y_val,z)

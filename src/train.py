@@ -19,7 +19,7 @@ config = Config(**para)
 vgg = model_vgg16_20(config)
 
 # Example 1
-# x,y,z = fetch_data(file = True)
+# x,y,z = fetch_data(file = True, cate_file = 'categories.txt', image_file = 'images.txt')
 # x -= vgg._channel_mean
 # X_train = x[:700]
 # X_val = x[700:]

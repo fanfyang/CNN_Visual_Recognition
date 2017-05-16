@@ -33,7 +33,7 @@ vgg = model_vgg16_20(config)
 
 # Example 2
 x,y,z = fetch_data_2(cate_file = 'categories.txt', image_file = 'images.txt')
-N = y.shape[0]
+N = len(y)
 N_train = N // 10 * 7
 N_val = N // 10 * 9
 X_train = x[:N_train]

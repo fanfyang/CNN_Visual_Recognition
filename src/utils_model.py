@@ -61,7 +61,7 @@ def fetch_data(path = '../data', resize = (224,224,3), file = False, dtype = '.j
 					labels.append(i)
 		return (np.array(images,dtype=np.float32), np.array(labels), categories)
 
-def fetch_data_2(path = '../data', dtype = '.jpg', resize = (224,224,3), cate_file = 'categories.txt', image_file = 'images.txt'):
+def fetch_data_2(path = '../data', dtype = '.jpg', cate_file = 'categories.txt', image_file = 'images.txt'):
 	images = list()
 	labels = list()
 	with open(os.path.join(path, cate_file), 'r') as f:
@@ -80,7 +80,7 @@ def fetch_data_2(path = '../data', dtype = '.jpg', resize = (224,224,3), cate_fi
 	labels = np.concatenate([[i] * num_cate[i] for i in range(len(categories))])
 	return (images, labels, categories)
 
-def data_generator(images, labels, categories, batch_size, shuffle = True, dtype = '.jpg'):
+def data_generator(images, labels, categories, batch_size, resize = (224,224,3), shuffle = True, dtype = '.jpg'):
 	N = len(labels)
 	if shuffle:
 		idxs = np.arange(len(labels))

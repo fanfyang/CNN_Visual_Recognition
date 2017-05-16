@@ -20,12 +20,11 @@ def prepare_train_data(num_per_cate = 50000, path = '../data', dtype = '.jpg'):
 		for i in range(len(categories)):
 			f.write(categories[i]+'\t%d\n'%(num_cate[i]))
 
-def fetch_data(path = '../data', resize = (224,224,3), file = False, dtype = '.jpg'):
+def fetch_data(path = '../data', resize = (224,224,3), file = False, dtype = '.jpg', cate_file = 'categories.txt', image_file = 'images.txt'):
 	images = list()
 	labels = list()
 	if file == True:
-		#with open(os.path.join(path,'categories.txt'), 'r') as f:
-		with open(os.path.join(path,'categories_small.txt'), 'r') as f:
+		with open(os.path.join(path, cate_file), 'r') as f:
 			temp = f.readlines()
 			num_cate = []
 			categories = []
@@ -34,8 +33,7 @@ def fetch_data(path = '../data', resize = (224,224,3), file = False, dtype = '.j
 				num_cate.append(int(num))
 				categories.append(cate)
 		num_fail = [0] * len(categories)
-		#with open(os.path.join(path,'images.txt'), 'r') as f:
-		with open(os.path.join(path,'images_small.txt'), 'r') as f:
+		with open(os.path.join(path, image_file), 'r') as f:
 			for i in range(len(categories)):
 				category = categories[i]
 				for j in range(num_cate[i]):
@@ -101,6 +99,8 @@ def data_generator(images, labels, categories, batch_size, resize = (224,224,3),
 				idx = idxs[(i-1)*batch_size+j]
 				try:
 					image = ndimage.imread(os.path.join('../data/img', categories[labels[idx]], images[idx]+dtype))
+					if len(image.shape) != 3 and image.shape[3] != 3:
+						continue
 					image_resized = imresize(image, resize)
 					images_data.append(image_resized)
 					labels_data.append(labels[idx])
@@ -111,6 +111,8 @@ def data_generator(images, labels, categories, batch_size, resize = (224,224,3),
 				idx = idxs[(num_batches-1)*batch_size+j]
 				try:
 					image = ndimage.imread(os.path.join('../data/img', categories[labels[idx]], images[idx]+dtype))
+					if len(image.shape) != 3 and image.shape[3] != 3:
+						continue
 					image_resized = imresize(image, resize)
 					images_data.append(image_resized)
 					labels_data.append(labels[idx])

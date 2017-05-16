@@ -45,7 +45,7 @@ class model_alexNet(model):
 		with tf.variable_scope('alexNet/pool2') as scope:
 			pool2 = tf.nn.max_pool(relu2, [1,3,3,1], [1,2,2,1], padding = 'VALID', name = 'pool')
 
-		with tf.variable_scope('alexNet/bn1') as scope:
+		with tf.variable_scope('alexNet/bn2') as scope:
 			bn1 = tf.layers.batch_normalization(pool2, trainable = True)
 
 		with tf.variable_scope('alexNet/conv3') as scope:

@@ -24,7 +24,8 @@ def fetch_data(path = '../data', resize = (224,224,3), file = False, dtype = '.j
 	images = list()
 	labels = list()
 	if file == True:
-		with open(os.path.join(path,'categories.txt'), 'r') as f:
+		#with open(os.path.join(path,'categories.txt'), 'r') as f:
+		with open(os.path.join(path,'categories_small.txt'), 'r') as f:
 			temp = f.readlines()
 			num_cate = []
 			categories = []
@@ -33,7 +34,8 @@ def fetch_data(path = '../data', resize = (224,224,3), file = False, dtype = '.j
 				num_cate.append(int(num))
 				categories.append(cate)
 		num_fail = [0] * len(categories)
-		with open(os.path.join(path,'images.txt'), 'r') as f:
+		#with open(os.path.join(path,'images.txt'), 'r') as f:
+		with open(os.path.join(path,'images_small.txt'), 'r') as f:
 			for i in range(len(categories)):
 				category = categories[i]
 				for j in range(num_cate[i]):

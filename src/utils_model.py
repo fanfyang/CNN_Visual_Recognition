@@ -77,7 +77,7 @@ def fetch_data_2(path = '../data', dtype = '.jpg', cate_file = 'categories.txt',
 			category = categories[i]
 			for j in range(num_cate[i]):
 				images.append(f.readline().rstrip('\n'))
-	labels = np.concatenate([[i] * num_cate[i] for i in range(len(categories))])
+	labels = [[i] * num_cate[i] for i in range(len(categories))]
 	img_label = zip(images, labels)
 	img_label_shuffle = np.random.shuffle(img_label)
 	images, labels = zip(*img_label_shuffle)

@@ -42,9 +42,9 @@ def fetch_data(path = '../data', resize = (224,224,3), file = False, dtype = '.j
 					try:
 						image = ndimage.imread(os.path.join(path, 'img', category, f.readline().rstrip('\n')+dtype))
 						image_resized = imresize(image, resize)
+						images.append(image_resized)
 					except:
 						num_fail[i] += 1
-					images.append(image_resized)
 		labels = np.concatenate([[i] * (num_cate[i]-num_fail[i]) for i in range(len(categories))])
 		idx = np.arange(len(labels))
 		np.random.shuffle(idx)
@@ -60,6 +60,61 @@ def fetch_data(path = '../data', resize = (224,224,3), file = False, dtype = '.j
 					images.append(image_resized)
 					labels.append(i)
 		return (np.array(images,dtype=np.float32), np.array(labels), categories)
+
+def fetch_data_2(path = '../data', dtype = '.jpg', cate_file = 'categories.txt', image_file = 'images.txt'):
+	images = list()
+	labels = list()
+	with open(os.path.join(path, cate_file), 'r') as f:
+		temp = f.readlines()
+		num_cate = []
+		categories = []
+		for item in temp:
+			cate, num = item.rstrip('\n').split('\t')
+			num_cate.append(int(num))
+			categories.append(cate)
+	with open(os.path.join(path, image_file), 'r') as f:
+		for i in range(len(categories)):
+			category = categories[i]
+			for j in range(num_cate[i]):
+				images.append(f.readline().rstrip('\n'))
+	labels = np.concatenate([[i] * num_cate[i] for i in range(len(categories))])
+	return (images, labels, categories)
+
+def data_generator(images, labels, categories, batch_size, resize = (224,224,3), shuffle = True, dtype = '.jpg'):
+	N = len(labels)
+	if shuffle:
+		idxs = np.arange(len(labels))
+		np.random.shuffle(idxs)
+	num_batches = (N+batch_size-1) // batch_size
+	i = 0
+	while True:
+		i += 1
+		images_data = list()
+		labels_data = list()
+		if i != num_batches:
+			for j in range(batch_size):
+				idx = idxs[(i-1)*batch_size+j]
+				try:
+					image = ndimage.imread(os.path.join('../data/img', categories[labels[idx]], images[idx]+dtype))
+					image_resized = imresize(image, resize)
+					images_data.append(image_resized)
+					labels_data.append(labels[idx])
+				except:
+					continue
+		else:
+			for j in range(N-(num_batches-1)*batch_size):
+				idx = idxs[(num_batches-1)*batch_size+j]
+				try:
+					image = ndimage.imread(os.path.join('../data/img', categories[labels[idx]], images[idx]+dtype))
+					image_resized = imresize(image, resize)
+					images_data.append(image_resized)
+					labels_data.append(labels[idx])
+				except:
+					continue
+			i = 0
+			if shuffle:
+				np.random.shuffle(idxs)
+		yield (np.array(images_data,dtype=np.float32), np.array(labels_data))
 
 def prepare_predict_data(file_path, channel_mean = np.array([ 203.89836428,  191.68313589,  180.50212764]), resize = (224,224,3)):
 	num = len(file_path)
@@ -134,7 +189,7 @@ class model(object):
 		return [self._class_names[i] for i in preds]
 
 	# You might want to re-define this function for your model
-	def run_epoch(self, sess, X, y, shuffle = True, batch_per_print = 100):
+	def run_epoch(self, sess, X, y, shuffle = True, batch_per_print = 2):
 		start = time.time()
 		num_batches = X.shape[0] // self._config.batch_size
 		idx = np.arange(X.shape[0])
@@ -155,7 +210,7 @@ class model(object):
 			loss, pred, _ = sess.run([self._loss, self._pred, self._train_op], feed_dict)
 			total_loss.append(loss)
 			accu.append(1.*np.sum(pred==y_batch)/self._config.batch_size)
-			if (i+1)/batch_per_print*batch_per_print == i+1:
+			if (i+1)//batch_per_print*batch_per_print == i+1:
 				num_eq = (i+1)//batch_per_eq
 				sys.stdout.write('\r '+str(i+1)+' / '+str(num_batches)+' [' + '='*num_eq + ' '*(len_eq - num_eq) + '] - %0.2fs - loss: %0.4f - acc: %0.4f  '%(float(time.time()-start),float(np.mean(total_loss)),float(np.mean(accu))))
 				sys.stdout.flush()
@@ -168,6 +223,52 @@ class model(object):
 			print('Epoch %d / %d'%(i+1,self._config.num_epoch))
 			self.run_epoch(sess, X_train, y_train)
 			print('train acc: %0.4f; val acc: %0.4f \n' % (1-self.error(sess, X_train, y_train),1-self.error(sess, X_val, y_val)))
+
+	def train_2(self, sess, X_train, y_train, X_val, y_val, categories, shuffle = True, dtype = '.jpg', batch_per_print = 2):
+		g_train = data_generator(X_train, y_train, categories, self._config.batch_size, shuffle = shuffle, dtype = dtype)
+		g_val = data_generator(X_val, y_val, categories, self._config.batch_size, shuffle = shuffle, dtype = dtype)
+		
+		N_train = len(y_train)
+		N_val = len(y_val)
+		train_batches = (N_train+self._config.batch_size-1) // self._config.batch_size
+		val_batches = (N_val+self._config.batch_size-1) // self._config.batch_size
+
+		len_eq = 20
+		batch_per_eq = (train_batches+len_eq-1)//len_eq
+
+
+		for i in range(self._config.num_epoch):
+			print('Epoch %d / %d'%(i+1,self._config.num_epoch))
+			start = time.time()
+			total_loss = []
+			accu = []
+
+			for j in range(train_batches):
+				X_batch, y_batch = next(g_train)
+				feed_dict = {self._input_placeholder:X_batch-self._channel_mean, self._label_placeholder:y_batch, self._dropout_placeholder:self._config.dropout, self._is_training_placeholder:True}
+				loss, pred, _ = sess.run([self._loss, self._pred, self._train_op], feed_dict)
+				total_loss.append(loss)
+				accu.append(1.*np.sum(pred==y_batch)/self._config.batch_size)
+				if (j+1)//batch_per_print*batch_per_print == j+1:
+					num_eq = (j+1)//batch_per_eq
+					sys.stdout.write('\r '+str(j+1)+' / '+str(train_batches)+' [' + '='*num_eq + ' '*(len_eq - num_eq) + '] - %0.2fs - loss: %0.4f - acc: %0.4f  '%(float(time.time()-start),float(np.mean(total_loss)),float(np.mean(accu))))
+					sys.stdout.flush()
+			sys.stdout.write('\r '+str(train_batches)+' / '+str(train_batches)+' [' + '='*len_eq + '] - %0.2fs - loss: %0.4f - acc: %0.4f  \n'%(float(time.time()-start),float(np.mean(total_loss)),float(np.mean(accu))))
+			sys.stdout.flush()
+
+			num_correct_train = 0
+			num_correct_val = 0
+			for _ in range(train_batches):
+				X_batch, y_batch = next(g_train)
+				feed_dict = {self._input_placeholder: X_batch-self._channel_mean, self._dropout_placeholder:1.0, self._is_training_placeholder:False}
+				pred = sess.run(self._pred, feed_dict)
+				num_correct_train += np.sum(pred == y_batch)
+			for _ in range(val_batches):
+				X_batch, y_batch = next(g_val)
+				feed_dict = {self._input_placeholder: X_batch-self._channel_mean, self._dropout_placeholder:1.0, self._is_training_placeholder:False}
+				pred = sess.run(self._pred, feed_dict)
+				num_correct_val += np.sum(pred == y_batch)
+			print('train acc: %0.4f; val acc: %0.4f \n' % (1.*num_correct_train/N_train,1.*num_correct_val/N_val))
 
 	# You might want to re-define this function for your model
 	def error(self, sess, X, y, is_training = False):

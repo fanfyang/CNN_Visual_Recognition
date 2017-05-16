@@ -1,7 +1,7 @@
 from utils_model import *
 import tensorflow as tf
 import sys
-sys.path.append(os.path.abspath(os.path.join(os.getcwd(), os.pardir, 'data/alexNet')))
+sys.path.append(os.path.abspath(os.path.join(os.getcwd(), os.pardir, 'data/vgg16')))
 from imagenet_classes import *
 
 class model_alexNet(model):

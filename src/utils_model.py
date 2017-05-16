@@ -78,9 +78,7 @@ def fetch_data_2(path = '../data', dtype = '.jpg', cate_file = 'categories.txt',
 			for j in range(num_cate[i]):
 				images.append(f.readline().rstrip('\n'))
 	labels = np.concatenate([[i] * num_cate[i] for i in range(len(categories))])
-	idx = np.arange(len(labels))
-	np.random.shuffle(idx)
-	return (images[idx], labels[idx], categories)
+	return (images, labels, categories)
 
 def data_generator(images, labels, categories, batch_size, shuffle = True, dtype = '.jpg'):
 	N = len(labels)

@@ -1,7 +1,7 @@
 import numpy as np
 import tensorflow as tf
 #import matplotlib.pyplot as plt 
-import os, sys, time
+import os, sys, time, argparse
 from scipy import ndimage
 from scipy.misc import imresize, imsave
 
@@ -24,7 +24,8 @@ def fetch_data(path = '../data', resize = (224,224,3), file = False, dtype = '.j
 	images = list()
 	labels = list()
 	if file == True:
-		with open(os.path.join(path,'categories.txt'), 'r') as f:
+		#with open(os.path.join(path,'categories.txt'), 'r') as f:
+		with open(os.path.join(path,'categories_small.txt'), 'r') as f:
 			temp = f.readlines()
 			num_cate = []
 			categories = []
@@ -33,7 +34,8 @@ def fetch_data(path = '../data', resize = (224,224,3), file = False, dtype = '.j
 				num_cate.append(int(num))
 				categories.append(cate)
 		num_fail = [0] * len(categories)
-		with open(os.path.join(path,'images.txt'), 'r') as f:
+		#with open(os.path.join(path,'images.txt'), 'r') as f:
+		with open(os.path.join(path,'images_small.txt'), 'r') as f:
 			for i in range(len(categories)):
 				category = categories[i]
 				for j in range(num_cate[i]):
@@ -46,7 +48,7 @@ def fetch_data(path = '../data', resize = (224,224,3), file = False, dtype = '.j
 		labels = np.concatenate([[i] * (num_cate[i]-num_fail[i]) for i in range(len(categories))])
 		idx = np.arange(len(labels))
 		np.random.shuffle(idx)
-		return (np.array(images)[idx], labels[idx], categories)
+		return (np.array(images,dtype=np.float32)[idx], labels[idx], categories)
 	else:
 		categories = [item for item in os.listdir(os.path.join(path,'img')) if item[0] != '.']
 		for i in range(len(categories)):
@@ -57,7 +59,7 @@ def fetch_data(path = '../data', resize = (224,224,3), file = False, dtype = '.j
 					image_resized = imresize(image, resize)
 					images.append(image_resized)
 					labels.append(i)
-		return (np.array(images), np.array(labels), categories)
+		return (np.array(images,dtype=np.float32), np.array(labels), categories)
 
 def prepare_predict_data(file_path, channel_mean = np.array([ 203.89836428,  191.68313589,  180.50212764]), resize = (224,224,3)):
 	num = len(file_path)
@@ -68,6 +70,20 @@ def prepare_predict_data(file_path, channel_mean = np.array([ 203.89836428,  191
 		images.append(image_resized - channel_mean)
 	return np.array(images, dtype = np.float32)
 
+def parse_argument(args):
+	para = {}
+	para['lr'] = float(args.lr) if args.lr != None else 0.001
+	para['decay_rate'] = float(args.dr) if args.dr != None else 0.9
+	para['decay_steps'] = int(args.ds) if args.ds != None else 700
+	para['l2'] = float(args.l2) if args.l2 != None else 0.0005
+	para['batch_size'] = int(args.bs) if args.bs != None else 30
+	para['num_epoch'] = int(args.ne) if args.ne != None else 20
+	para['dropout'] = flaot(args.d) if args.d != None else 0.5
+	para['num_classes'] = int(args.nc) if args.nc != None else 1000
+	para['use_batch_norm'] = False if args.bn != None and args.bn == 'F' else True
+	return para
+
+
 class Config_Pic:
 	def __init__(self, height = 224, width = 224, channels = 3):
 		self.height = height
@@ -75,7 +91,7 @@ class Config_Pic:
 		self.channels = channels
 
 class Config:
-	def __init__(self, lr = 0.025, decay_rate = 0.9, decay_steps = 700, l2 = 0.0005, batch_size = 30, num_epoch = 20, dropout = 0.5, num_classes = 1000, use_batch_norm = True):
+	def __init__(self, lr = 0.001, decay_rate = 0.9, decay_steps = 700, l2 = 0.0005, batch_size = 30, num_epoch = 20, dropout = 0.5, num_classes = 1000, use_batch_norm = True):
 		self.lr = lr
 		self.decay_rate = decay_rate
 		self.decay_steps = decay_steps

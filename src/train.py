@@ -32,7 +32,7 @@ vgg = model_vgg16_20(config)
 # vgg.train(sess,X_train,y_train,X_val,y_val)
 
 # Example 2
-x,y,z = fetch_data_2(cate_file = 'categories_small.txt', image_file = 'images_small.txt')
+x,y,z = fetch_data_2(cate_file = 'categories.txt', image_file = 'images.txt')
 X_train = x[:700]
 X_val = x[700:]
 y_train = y[:700]

@@ -28,7 +28,7 @@ y_val = y[700:]
 # print('===========', X_train.shape, X_val.shape, y_train.shape, y_val.shape, '===============')
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
-# alex.load_parameters_npy(sess,'../data/alex/bvlc_alexnet.npy',rand_init = ['fc8'])
+alex.load_parameters_npy(sess,'../data/alex/bvlc_alexnet.npy',rand_init = ['fc8'])
 alex.train(sess,X_train,y_train,X_val,y_val)
 
 # # Example 2

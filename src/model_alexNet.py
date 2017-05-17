@@ -80,8 +80,8 @@ class model_alexNet(model):
 			pool3 = tf.nn.max_pool(relu5, [1,3,3,1], [1,2,2,1], padding = 'VALID', name = 'pool')			
 
 		with tf.variable_scope('alexNet/fc6') as scope:
-			pool3_reshape = tf.reshape(pool3, [-1,int(prod(pool3.get_shape()[1:]))])
-			Wfc6 = tf.get_variable('W',[int(prod(pool3.get_shape()[1:])),4096], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
+			pool3_reshape = tf.reshape(pool3, [-1,9216])
+			Wfc6 = tf.get_variable('W',[9216,4096], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
 			bfc6 = tf.get_variable('b',[4096], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
 			fc6 = tf.nn.dropout(tf.nn.relu(tf.matmul(pool3_reshape, Wfc6) + bfc6), self._dropout_placeholder, name = 'fc6')
 			self._parameters['fc6_W'] = Wfc6

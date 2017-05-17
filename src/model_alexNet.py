@@ -118,7 +118,8 @@ class model_alexNet(model):
 		parameters = np.load(path).item()
 		for key in parameters:
 			if key not in rand_init:
-				sess.run(self._parameters[key].assign(parameters[key]))
+				sess.run(self._parameters[key+'_'+'W'].assign(parameters[key][0]))
+				sess.run(self._parameters[key+'_'+'b'].assign(parameters[key][1]))
 
 if __name__ == '__main__':
 	alexNet = model_alexNet()

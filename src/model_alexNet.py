@@ -115,7 +115,7 @@ class model_alexNet(model):
 
 
 	def load_parameters_npy(self, sess, path, rand_init = []):
-		parameters = np.load(path).item()
+		parameters = np.load(path, encoding='bytes').item()
 		for key in parameters:
 			if key not in rand_init:
 				sess.run(self._parameters[key+'_'+'W'].assign(parameters[key][0]))

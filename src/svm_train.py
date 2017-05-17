@@ -1,4 +1,4 @@
-from svm_model import *
+from model_svm import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--lr', help = 'learning rate')

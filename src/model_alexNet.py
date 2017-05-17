@@ -6,7 +6,7 @@ from imagenet_classes import *
 
 class model_alexNet(model):
 	def __init__(self,config):
-		self._config_pic = Config_Pic()
+		self._config_pic = Config_Pic(height = 227, width = 227, channels = 3)
 		self._config = config
 
 		self._input_placeholder = tf.placeholder(dtype = tf.float32, shape = (None, self._config_pic.height, self._config_pic.width, self._config_pic.channels))

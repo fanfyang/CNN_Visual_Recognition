@@ -116,8 +116,8 @@ class model_alexNet(model):
 
 		with tf.variable_scope('alexNet/fc6') as scope:
 			pool3_reshape = tf.reshape(pool3, [-1,9216])
-			Wfc6 = tf.get_variable('W',[9216,4096], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
-			bfc6 = tf.get_variable('b',[4096], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
+			Wfc6 = tf.get_variable('W',[9216,4096], trainable=True, initializer=tf.contrib.layers.xavier_initializer())
+			bfc6 = tf.get_variable('b',[4096], trainable=True, initializer=tf.contrib.layers.xavier_initializer())
 			fc6 = tf.nn.dropout(tf.nn.relu(tf.matmul(pool3_reshape, Wfc6) + bfc6), self._dropout_placeholder, name = 'fc6')
 			self._parameters['fc6_W'] = Wfc6
 			self._parameters['fc6_b'] = bfc6

@@ -32,7 +32,7 @@ svm = svm(config)
 # vgg.train(sess,X_train,y_train,X_val,y_val)
 
 # Example 2
-x,y,z = fetch_data(file = True, cate_file = 'categories_small.txt', image_file = 'images_small.txt')
+x,y,z = fetch_data_2( cate_file = 'categories_small.txt', image_file = 'images_small.txt')
 N = len(y)
 N_train = N // 10 * 7
 N_val = N // 10 * 9
@@ -44,4 +44,4 @@ y_val = y[N_train:N_val]
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 # svm.load_parameters(sess,'../data/vgg16/vgg16_weights.npz',rand_init = ['fc8_W', 'fc8_b'])
-svm.train(sess,X_train,y_train,X_val,y_val)
+svm.train_2(sess,X_train,y_train,X_val,y_val,z)

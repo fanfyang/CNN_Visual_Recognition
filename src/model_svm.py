@@ -7,6 +7,8 @@ class svm(model):
 		self._config_fig = Config_Pic()
 		self._parameters = dict()
 
+		self._channel_mean = np.zeros((3))
+
 		self._input_placeholder = tf.placeholder(dtype = tf.float32, shape = (None, self._config_fig.width, self._config_fig.height, self._config_fig.channels))
 		self._label_placeholder = tf.placeholder(dtype = tf.int32, shape = (None))
 		self._dropout_placeholder = tf.placeholder(dtype = tf.float32)

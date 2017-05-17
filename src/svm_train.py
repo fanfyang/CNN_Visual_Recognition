@@ -32,7 +32,7 @@ svm = svm(config)
 # vgg.train(sess,X_train,y_train,X_val,y_val)
 
 # Example 2
-x,y,z = fetch_data(cate_file = 'categories.txt', image_file = 'images.txt')
+x,y,z = fetch_data(file = True, cate_file = 'categories.txt', image_file = 'images.txt')
 N = len(y)
 N_train = N // 10 * 7
 N_val = N // 10 * 9

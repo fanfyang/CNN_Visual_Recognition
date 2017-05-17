@@ -28,7 +28,16 @@ y_val = y[700:]
 
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
-# vgg.load_parameters(sess,'../data/vgg16/vgg16_weights.npz',rand_init = ['fc8_W', 'fc8_b'])
+
+def load_parameters_npy(self, sess, path, rand_init = []):
+	parameters = np.load(path).item()
+	for key in parameters:
+		if key not in rand_init:
+			sess.run(self._parameters[key].assign(parameters[key]))
+
+
+
+alex.load_parameters_npy(sess,'../data/alex/bvlc_alexnet.npy',rand_init = ['fc8_W', 'fc8_b'])
 alex.train(sess,X_train,y_train,X_val,y_val)
 
 # # Example 2

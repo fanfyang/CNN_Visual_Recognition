@@ -20,8 +20,8 @@ class model_alexNet(model):
 		self._parameters = dict()
 
 		with tf.variable_scope('alexNet/conv1') as scope:
-			Wconv1 = tf.get_variable('W', [11,11,self._config_pic.channels, 96], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
-			bconv1 = tf.get_variable('b', [96], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
+			Wconv1 = tf.get_variable('W', [11,11,self._config_pic.channels, 96], trainable = False)
+			bconv1 = tf.get_variable('b', [96], trainable = False)
 			conv1 = tf.nn.conv2d(self._input_placeholder, Wconv1, [1,4,4,1], padding = 'VALID') + bconv1
 			relu1 = tf.nn.relu(conv1, name = 'relu1')
 			self._parameters['conv1_W'] = Wconv1
@@ -35,8 +35,8 @@ class model_alexNet(model):
 			bn1 = tf.layers.batch_normalization(pool1, trainable = True)			
 
 		with tf.variable_scope('alexNet/conv2') as scope:
-			Wconv2 = tf.get_variable('W', [5,5,96,256], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
-			bconv2 = tf.get_variable('b', [256], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
+			Wconv2 = tf.get_variable('W', [5,5,96,256], trainable = False)
+			bconv2 = tf.get_variable('b', [256], trainable = False)
 			conv2 = tf.nn.conv2d(bn1, Wconv2, [1,1,1,1], padding = 'SAME') + bconv2
 			relu2 = tf.nn.relu(conv2, name = 'relu2')
 			self._parameters['conv2_W'] = Wconv2
@@ -50,8 +50,8 @@ class model_alexNet(model):
 			bn1 = tf.layers.batch_normalization(pool2, trainable = True)
 
 		with tf.variable_scope('alexNet/conv3') as scope:
-			Wconv3 = tf.get_variable('W', [3,3,256,384], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
-			bconv3 = tf.get_variable('b', [384], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
+			Wconv3 = tf.get_variable('W', [3,3,256,384], trainable = False)
+			bconv3 = tf.get_variable('b', [384], trainable = False)
 			conv3 = tf.nn.conv2d(bn1, Wconv3, [1,1,1,1], padding = 'SAME') + bconv3
 			relu3 = tf.nn.relu(conv3, name = 'relu3')
 			self._parameters['conv3_W'] = Wconv3
@@ -59,8 +59,8 @@ class model_alexNet(model):
 			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv3)))
 
 		with tf.variable_scope('alexNet/conv4') as scope:
-			Wconv4 = tf.get_variable('W',[3,3,384,384], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
-			bconv4 = tf.get_variable('b',[384], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
+			Wconv4 = tf.get_variable('W',[3,3,384,384], trainable = False)
+			bconv4 = tf.get_variable('b',[384], trainable = False)
 			conv4 = tf.nn.conv2d(relu3, Wconv4, [1,1,1,1], padding = 'SAME') + bconv4
 			relu4 = tf.nn.relu(conv4, name = 'relu4')
 			self._parameters['conv4_W'] = Wconv4
@@ -68,8 +68,8 @@ class model_alexNet(model):
 			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv4)))
 
 		with tf.variable_scope('alexNet/conv5') as scope:
-			Wconv5 = tf.get_variable('W',[3,3,384,256], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
-			bconv5 = tf.get_variable('b',[256], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
+			Wconv5 = tf.get_variable('W',[3,3,384,256], trainable = False)
+			bconv5 = tf.get_variable('b',[256], trainable = False)
 			conv5 = tf.nn.conv2d(relu4, Wconv5, [1,1,1,1], padding = 'SAME') + bconv5
 			relu5 = tf.nn.relu(conv5, name = 'relu5')
 			self._parameters['conv5_W'] = Wconv5
@@ -80,8 +80,8 @@ class model_alexNet(model):
 			pool3 = tf.nn.max_pool(relu5, [1,3,3,1], [1,2,2,1], padding = 'VALID', name = 'pool')			
 
 		with tf.variable_scope('alexNet/fc6') as scope:
-			pool3_reshape = tf.reshape(pool3, [-1,9216])
-			Wfc6 = tf.get_variable('W',[9216,4096], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
+			pool3_reshape = tf.reshape(pool3, [-1,int(prod(pool3.get_shape()[1:]))])
+			Wfc6 = tf.get_variable('W',[int(prod(pool3.get_shape()[1:])),4096], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
 			bfc6 = tf.get_variable('b',[4096], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
 			fc6 = tf.nn.dropout(tf.nn.relu(tf.matmul(pool3_reshape, Wfc6) + bfc6), self._dropout_placeholder, name = 'fc6')
 			self._parameters['fc6_W'] = Wfc6

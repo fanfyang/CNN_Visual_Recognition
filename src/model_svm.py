@@ -4,7 +4,7 @@ class svm(model):
 	def __init__(self, config):
 		# self._config = Config(batch_size = 10, num_classes = 2, l2 = 0, lr = 0.001, num_epoch = 5)
 		self._config = config
-		self._config_fig = Config_pic()
+		self._config_fig = Config_Pic()
 		self._parameters = dict()
 
 		self._input_placeholder = tf.placeholder(dtype = tf.float32, shape = (None, self._config_fig.width * self._config_fig.height * self._config_fig.channels))

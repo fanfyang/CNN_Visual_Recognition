@@ -114,6 +114,12 @@ class model_alexNet(model):
 		self._train_op = optimizer.minimize(self._loss)
 
 
+	def load_parameters_npy(self, sess, path, rand_init = []):
+		parameters = np.load(path).item()
+		for key in parameters:
+			if key not in rand_init:
+				sess.run(self._parameters[key].assign(parameters[key]))
+
 if __name__ == '__main__':
 	alexNet = model_alexNet()
 	with tf.Session() as sess:

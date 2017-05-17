@@ -50,16 +50,16 @@ class model_alexNet(model):
 			self._parameters['conv1_b'] = bconv1
 			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv1)))
 
-		with tf.variable_scope('alexNet/lrn1') as scope:
-			radius = 2; alpha = 2e-05; beta = 0.75; bias = 1.0
-			lrn1 = tf.nn.local_response_normalization(relu1, 
-													depth_radius=radius, 
-													alpha=alpha,
-													beta=beta,
-													bias=bias)			
+		# with tf.variable_scope('alexNet/lrn1') as scope:
+		# 	radius = 2; alpha = 2e-05; beta = 0.75; bias = 1.0
+		# 	lrn1 = tf.nn.local_response_normalization(relu1, 
+		# 											depth_radius=radius, 
+		# 											alpha=alpha,
+		# 											beta=beta,
+		# 											bias=bias)			
 
 		with tf.variable_scope('alexNet/pool1') as scope:
-			pool1 = tf.nn.max_pool(lrn1, [1,3,3,1], [1,2,2,1], padding = 'VALID', name = 'pool')
+			pool1 = tf.nn.max_pool(relu1, [1,3,3,1], [1,2,2,1], padding = 'VALID', name = 'pool')
 
 		with tf.variable_scope('alexNet/conv2') as scope:
 			Wconv2 = tf.get_variable('W', [5,5,48,256], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
@@ -70,16 +70,16 @@ class model_alexNet(model):
 			self._parameters['conv2_b'] = bconv2
 			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv2)))
 
-		with tf.variable_scope('alexNet/lrn2') as scope:
-			radius = 2; alpha = 2e-05; beta = 0.75; bias = 1.0
-			lrn2 = tf.nn.local_response_normalization(relu2, 
-													depth_radius=radius, 
-													alpha=alpha,
-													beta=beta,
-													bias=bias)
+		# with tf.variable_scope('alexNet/lrn2') as scope:
+		# 	radius = 2; alpha = 2e-05; beta = 0.75; bias = 1.0
+		# 	lrn2 = tf.nn.local_response_normalization(relu2, 
+		# 											depth_radius=radius, 
+		# 											alpha=alpha,
+		# 											beta=beta,
+		# 											bias=bias)
 
 		with tf.variable_scope('alexNet/pool2') as scope:
-			pool2 = tf.nn.max_pool(lrn2, [1,3,3,1], [1,2,2,1], padding = 'VALID', name = 'pool')
+			pool2 = tf.nn.max_pool(relu2, [1,3,3,1], [1,2,2,1], padding = 'VALID', name = 'pool')
 
 		with tf.variable_scope('alexNet/conv3') as scope:
 			Wconv3 = tf.get_variable('W', [3,3,256,384], trainable = True, initializer = tf.contrib.layers.xavier_initializer())

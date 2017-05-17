@@ -32,7 +32,7 @@ alex = model_alexNet(config)
 # alex.train(sess,X_train,y_train,X_val,y_val)
 
 # # Example 2
-x,y,z = fetch_data_2(cate_file = 'categories_small.txt', image_file = 'images_small.txt')
+x,y,z = fetch_data_2(resize = (227,227,3), cate_file = 'categories_small.txt', image_file = 'images_small.txt')
 N = len(y)
 N_train = N // 10 * 7
 N_val = N // 10 * 9

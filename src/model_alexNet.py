@@ -158,7 +158,6 @@ class model_alexNet(model):
 		parameters = np.load(path, encoding='bytes').item()
 		for key in parameters:
 			if key not in rand_init:
-				W = np.swapaxes(parameters[key][0])
 				sess.run(self._parameters[key+'_'+'W'].assign())
 				sess.run(self._parameters[key+'_'+'b'].assign(parameters[key][1]))
 

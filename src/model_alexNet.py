@@ -134,7 +134,7 @@ class model_alexNet(model):
 
 		with tf.variable_scope('alexNet/fc8') as scope:
 			Wfc8 = tf.get_variable('W',[4096,self._config.num_classes], trainable =False)
-			bfc8 = tf.get_variable('b',[self._config.num_classes], trainable =False)
+			bfc8 = tf.get_variable('b',[self._config.num_classes], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
 			self._score = tf.matmul(fc7, Wfc8) + bfc8
 			self._parameters['fc8_W'] = Wfc8
 			self._parameters['fc8_b'] = bfc8

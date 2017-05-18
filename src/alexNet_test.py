@@ -32,7 +32,7 @@ alex = model_alexNet(config)
 # alex.train(sess,X_train,y_train,X_val,y_val)
 
 # Example 2
-x,y,z = fetch_data_2(cate_file = 'categories_small.txt', image_file = 'images_small.txt')
+x,y,z = fetch_data_2(cate_file = 'categories.txt', image_file = 'images.txt')
 N = len(y)
 N_train = N // 10 * 7
 N_val = N // 10 * 9
@@ -45,3 +45,4 @@ sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 alex.load_parameters_npy(sess,'../data/alex/bvlc_alexnet.npy',rand_init = ['fc8'])
 alex.train_2(sess,X_train,y_train,X_val,y_val,z, resize = (227,227,3))
+alex.save_parameters(sess, '../model/alex_v1/')

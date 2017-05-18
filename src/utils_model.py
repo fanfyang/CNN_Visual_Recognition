@@ -230,7 +230,7 @@ class model(object):
 		sys.stdout.flush()
 
 	# You might want to re-define this function for your model
-	def train(self, sess, X_train, y_train, X_val, y_val, version):
+	def train(self, sess, X_train, y_train, X_val, y_val, version, model = 'vgg'):
 		val_acc_current_best = 0.0
 		for i in range(self._config.num_epoch):
 			print('Epoch %d / %d'%(i+1,self._config.num_epoch))
@@ -240,7 +240,7 @@ class model(object):
 			print('train acc: %0.4f; val acc: %0.4f \n' % (train_acc, val_acc))
 			if val_acc > val_acc_current_best:
 				val_acc_current_best = val_acc
-				self.save_parameters(sess, '../model/vgg/',version)
+				self.save_parameters(sess, '../model/' + model + '/',version)
 
 	def train_2(self, sess, X_train, y_train, X_val, y_val, categories, resize = (224,224,3), shuffle = True, dtype = '.jpg', batch_per_print = 2):
 		g_train = data_generator(X_train, y_train, categories, self._config.batch_size, resize, shuffle = shuffle, dtype = dtype)

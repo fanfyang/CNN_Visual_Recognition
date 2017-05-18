@@ -10,7 +10,10 @@ parser.add_argument('--ne', help = 'number of epoches')
 parser.add_argument('--d', help = 'droupout')
 parser.add_argument('--nc', help = 'number of classes')
 parser.add_argument('--bn', help = 'batch normalization')
+parser.add_argument('--v', help = 'version')
 args = parser.parse_args()
+
+version = args.v
 
 para = parse_argument(args)
 
@@ -32,7 +35,7 @@ y_val = y[N_train:N_val]
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 vgg.load_parameters(sess,'../data/vgg16/vgg16_weights.npz',rand_init = ['fc8_W', 'fc8_b'])
-vgg.train(sess,X_train,y_train,X_val,y_val)
+vgg.train(sess,X_train,y_train,X_val,y_val,version)
 
 # # Example 2
 # x,y,z = fetch_data_2(cate_file = 'categories.txt', image_file = 'images.txt')
@@ -48,5 +51,3 @@ vgg.train(sess,X_train,y_train,X_val,y_val)
 # sess.run(tf.global_variables_initializer())
 # vgg.load_parameters(sess,'../data/vgg16/vgg16_weights.npz',rand_init = ['fc8_W', 'fc8_b'])
 # vgg.train_2(sess,X_train,y_train,X_val,y_val,z)
-
-vgg.save_parameters(sess, '../model/vgg_v1/')

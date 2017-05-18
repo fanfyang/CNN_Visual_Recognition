@@ -231,9 +231,9 @@ class model(object):
 			self.run_epoch(sess, X_train, y_train)
 			print('train acc: %0.4f; val acc: %0.4f \n' % (1-self.error(sess, X_train, y_train),1-self.error(sess, X_val, y_val)))
 
-	def train_2(self, sess, X_train, y_train, X_val, y_val, categories, shuffle = True, dtype = '.jpg', batch_per_print = 2):
-		g_train = data_generator(X_train, y_train, categories, self._config.batch_size, shuffle = shuffle, dtype = dtype)
-		g_val = data_generator(X_val, y_val, categories, self._config.batch_size, shuffle = shuffle, dtype = dtype)
+	def train_2(self, sess, X_train, y_train, X_val, y_val, categories, resize = (224,224,3), shuffle = True, dtype = '.jpg', batch_per_print = 2):
+		g_train = data_generator(X_train, y_train, categories, self._config.batch_size, resize, shuffle = shuffle, dtype = dtype)
+		g_val = data_generator(X_val, y_val, categories, self._config.batch_size, resize, shuffle = shuffle, dtype = dtype)
 		
 		N_train = len(y_train)
 		N_val = len(y_val)

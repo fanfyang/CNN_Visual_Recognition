@@ -22,7 +22,7 @@ config = Config(**para)
 vgg = model_vgg16_20(config)
 
 # Example 1
-x,y,z = fetch_data(file = True, cate_file = 'categories_20000.txt', image_file = 'images_20000.txt')
+x,y,z = fetch_data(file = True, cate_file = 'categories_10000.txt', image_file = 'images_10000.txt')
 x -= vgg._channel_mean
 N = len(y)
 N_train = N // 10 * 7

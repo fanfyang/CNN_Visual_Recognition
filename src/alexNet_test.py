@@ -32,7 +32,7 @@ y_val = y[700:]
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 alex.load_parameters_npy(sess,'../data/alex/bvlc_alexnet.npy',rand_init = ['fc8'])
-alex.train(sess,X_train,y_train,X_val,y_val,version)
+alex.train(sess,X_train,y_train,X_val,y_val,version,modle='alex')
 
 # # Example 2
 # x,y,z = fetch_data_2(cate_file = 'categories.txt', image_file = 'images.txt')

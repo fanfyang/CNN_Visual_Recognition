@@ -39,6 +39,8 @@ def fetch_data(path = '../data', resize = (224,224,3), file = False, dtype = '.j
 				for j in range(num_cate[i]):
 					try:
 						image = ndimage.imread(os.path.join(path, 'img', category, f.readline().rstrip('\n')+dtype))
+						if len(image.shape) != 3 and image.shape[3] != 3:
+							continue
 						image_resized = imresize(image, resize)
 						images.append(image_resized)
 					except:
@@ -54,6 +56,8 @@ def fetch_data(path = '../data', resize = (224,224,3), file = False, dtype = '.j
 			for item in os.listdir(os.path.join(path, 'img', category)):
 				if item.endswith('.jpg'):
 					image = ndimage.imread(os.path.join(path, 'img', category, item))
+					if len(image.shape) != 3 and image.shape[3] != 3:
+						continue
 					image_resized = imresize(image, resize)
 					images.append(image_resized)
 					labels.append(i)

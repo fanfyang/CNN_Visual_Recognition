@@ -1,6 +1,5 @@
 import numpy as np
 import tensorflow as tf
-#import matplotlib.pyplot as plt 
 import os, sys, time, argparse
 from scipy import ndimage
 from scipy.misc import imresize, imsave
@@ -39,6 +38,8 @@ def fetch_data(path = '../data', resize = (224,224,3), file = False, dtype = '.j
 				for j in range(num_cate[i]):
 					try:
 						image = ndimage.imread(os.path.join(path, 'img', category, f.readline().rstrip('\n')+dtype))
+						if len(image.shape) != 3 and image.shape[3] != 3:
+							continue
 						image_resized = imresize(image, resize)
 						images.append(image_resized)
 					except:
@@ -54,6 +55,8 @@ def fetch_data(path = '../data', resize = (224,224,3), file = False, dtype = '.j
 			for item in os.listdir(os.path.join(path, 'img', category)):
 				if item.endswith('.jpg'):
 					image = ndimage.imread(os.path.join(path, 'img', category, item))
+					if len(image.shape) != 3 and image.shape[3] != 3:
+						continue
 					image_resized = imresize(image, resize)
 					images.append(image_resized)
 					labels.append(i)
@@ -140,7 +143,7 @@ def parse_argument(args):
 	para['l2'] = float(args.l2) if args.l2 != None else 0.0005
 	para['batch_size'] = int(args.bs) if args.bs != None else 30
 	para['num_epoch'] = int(args.ne) if args.ne != None else 20
-	para['dropout'] = flaot(args.d) if args.d != None else 0.5
+	para['dropout'] = float(args.d) if args.d != None else 0.5
 	para['num_classes'] = int(args.nc) if args.nc != None else 1000
 	para['use_batch_norm'] = False if args.bn != None and args.bn == 'F' else True
 	return para
@@ -180,10 +183,10 @@ class model(object):
 			if key not in rand_init:
 				sess.run(self._parameters[key].assign(parameters[key]))
 
-	def save_parameters(self, sess, path):
+	def save_parameters(self, sess, path, version):
 		if not os.path.exists(path):
 			os.makedirs(path)
-		exec('np.savez(\'%s\''%(path+'para.npz') + ',' + ','.join(['%s = sess.run(self._parameters[\'%s\'])' %(key, key) for key in self._parameters]) + ')')
+		exec('np.savez(\'%s\''%(path+'para_' + version + '.npz') + ',' + ','.join(['%s = sess.run(self._parameters[\'%s\'])' %(key, key) for key in self._parameters]) + ')')
 
 	# You might want to re-define this function for your model
 	def predict(self, sess, image_path):
@@ -221,15 +224,23 @@ class model(object):
 				num_eq = (i+1)//batch_per_eq
 				sys.stdout.write('\r '+str(i+1)+' / '+str(num_batches)+' [' + '='*num_eq + ' '*(len_eq - num_eq) + '] - %0.2fs - loss: %0.4f - acc: %0.4f  '%(float(time.time()-start),float(np.mean(total_loss)),float(np.mean(accu))))
 				sys.stdout.flush()
+			if shuffle:
+				np.random.shuffle(idx)
 		sys.stdout.write('\r '+str(num_batches)+' / '+str(num_batches)+' [' + '='*len_eq + '] - %0.2fs - loss: %0.4f - acc: %0.4f  \n'%(float(time.time()-start),float(np.mean(total_loss)),float(np.mean(accu))))
 		sys.stdout.flush()
 
 	# You might want to re-define this function for your model
-	def train(self, sess, X_train, y_train, X_val, y_val):
+	def train(self, sess, X_train, y_train, X_val, y_val, version):
+		val_acc_current_best = 0.0
 		for i in range(self._config.num_epoch):
 			print('Epoch %d / %d'%(i+1,self._config.num_epoch))
 			self.run_epoch(sess, X_train, y_train)
-			print('train acc: %0.4f; val acc: %0.4f \n' % (1-self.error(sess, X_train, y_train),1-self.error(sess, X_val, y_val)))
+			train_acc = 1-self.error(sess, X_train, y_train)
+			val_acc = 1-self.error(sess, X_val, y_val)
+			print('train acc: %0.4f; val acc: %0.4f \n' % (train_acc, val_acc))
+			if val_acc > val_acc_current_best:
+				val_acc_current_best = val_acc
+				self.save_parameters(sess, '../model/vgg/',version)
 
 	def train_2(self, sess, X_train, y_train, X_val, y_val, categories, resize = (224,224,3), shuffle = True, dtype = '.jpg', batch_per_print = 2):
 		g_train = data_generator(X_train, y_train, categories, self._config.batch_size, resize, shuffle = shuffle, dtype = dtype)
@@ -289,4 +300,4 @@ class model(object):
 		pred = sess.run(self._pred, feed_dict)
 		label = y[num_batches*self._config.batch_size:]
 		num_correct += np.sum(pred == label)
-		return 1 - num_correct * 1.0 / X.shape[0]
+		return 1 - num_correct * 1.0 / (num_batches * self._config.batch_size)

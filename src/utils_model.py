@@ -1,6 +1,5 @@
 import numpy as np
 import tensorflow as tf
-#import matplotlib.pyplot as plt 
 import os, sys, time, argparse
 from scipy import ndimage
 from scipy.misc import imresize, imsave
@@ -184,10 +183,10 @@ class model(object):
 			if key not in rand_init:
 				sess.run(self._parameters[key].assign(parameters[key]))
 
-	def save_parameters(self, sess, path):
+	def save_parameters(self, sess, path, version):
 		if not os.path.exists(path):
 			os.makedirs(path)
-		exec('np.savez(\'%s\''%(path+'para.npz') + ',' + ','.join(['%s = sess.run(self._parameters[\'%s\'])' %(key, key) for key in self._parameters]) + ')')
+		exec('np.savez(\'%s\''%(path+'para_'+version'.npz') + ',' + ','.join(['%s = sess.run(self._parameters[\'%s\'])' %(key, key) for key in self._parameters]) + ')')
 
 	# You might want to re-define this function for your model
 	def predict(self, sess, image_path):
@@ -229,11 +228,17 @@ class model(object):
 		sys.stdout.flush()
 
 	# You might want to re-define this function for your model
-	def train(self, sess, X_train, y_train, X_val, y_val):
+	def train(self, sess, X_train, y_train, X_val, y_val, version):
+		val_acc_current_best = 0.0
 		for i in range(self._config.num_epoch):
 			print('Epoch %d / %d'%(i+1,self._config.num_epoch))
 			self.run_epoch(sess, X_train, y_train)
-			print('train acc: %0.4f; val acc: %0.4f \n' % (1-self.error(sess, X_train, y_train),1-self.error(sess, X_val, y_val)))
+			train_acc = 1-self.error(sess, X_train, y_train)
+			val_acc = 1-self.error(sess, X_val, y_val)
+			print('train acc: %0.4f; val acc: %0.4f \n' % (train_acc, val_acc))
+			if val_acc > val_acc_current_best:
+				val_acc_current_best = val_acc
+				vgg.save_parameters(sess, '../model/vgg/',version)
 
 	def train_2(self, sess, X_train, y_train, X_val, y_val, categories, resize = (224,224,3), shuffle = True, dtype = '.jpg', batch_per_print = 2):
 		g_train = data_generator(X_train, y_train, categories, self._config.batch_size, resize, shuffle = shuffle, dtype = dtype)

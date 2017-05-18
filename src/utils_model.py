@@ -143,7 +143,7 @@ def parse_argument(args):
 	para['l2'] = float(args.l2) if args.l2 != None else 0.0005
 	para['batch_size'] = int(args.bs) if args.bs != None else 30
 	para['num_epoch'] = int(args.ne) if args.ne != None else 20
-	para['dropout'] = flaot(args.d) if args.d != None else 0.5
+	para['dropout'] = float(args.d) if args.d != None else 0.5
 	para['num_classes'] = int(args.nc) if args.nc != None else 1000
 	para['use_batch_norm'] = False if args.bn != None and args.bn == 'F' else True
 	return para

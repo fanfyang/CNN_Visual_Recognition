@@ -238,7 +238,7 @@ class model(object):
 			print('train acc: %0.4f; val acc: %0.4f \n' % (train_acc, val_acc))
 			if val_acc > val_acc_current_best:
 				val_acc_current_best = val_acc
-				vgg.save_parameters(sess, '../model/vgg/',version)
+				self.save_parameters(sess, '../model/vgg/',version)
 
 	def train_2(self, sess, X_train, y_train, X_val, y_val, categories, resize = (224,224,3), shuffle = True, dtype = '.jpg', batch_per_print = 2):
 		g_train = data_generator(X_train, y_train, categories, self._config.batch_size, resize, shuffle = shuffle, dtype = dtype)

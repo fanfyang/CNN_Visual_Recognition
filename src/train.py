@@ -19,20 +19,8 @@ config = Config(**para)
 vgg = model_vgg16_20(config)
 
 # Example 1
-# x,y,z = fetch_data(file = True, cate_file = 'categories.txt', image_file = 'images.txt')
-# x -= vgg._channel_mean
-# X_train = x[:700]
-# X_val = x[700:]
-# y_train = y[:700]
-# y_val = y[700:]
-
-# sess = tf.Session()
-# sess.run(tf.global_variables_initializer())
-# vgg.load_parameters(sess,'../data/vgg16/vgg16_weights.npz',rand_init = ['fc8_W', 'fc8_b'])
-# vgg.train(sess,X_train,y_train,X_val,y_val)
-
-# Example 2
-x,y,z = fetch_data_2(cate_file = 'categories.txt', image_file = 'images.txt')
+x,y,z = fetch_data(file = True, cate_file = 'categories_20000.txt', image_file = 'images_20000.txt')
+x -= vgg._channel_mean
 N = len(y)
 N_train = N // 10 * 7
 N_val = N // 10 * 9
@@ -44,4 +32,21 @@ y_val = y[N_train:N_val]
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 vgg.load_parameters(sess,'../data/vgg16/vgg16_weights.npz',rand_init = ['fc8_W', 'fc8_b'])
-vgg.train_2(sess,X_train,y_train,X_val,y_val,z)
+vgg.train(sess,X_train,y_train,X_val,y_val)
+
+# # Example 2
+# x,y,z = fetch_data_2(cate_file = 'categories.txt', image_file = 'images.txt')
+# N = len(y)
+# N_train = N // 10 * 7
+# N_val = N // 10 * 9
+# X_train = x[:N_train]
+# X_val = x[N_train:N_val]
+# y_train = y[:N_train]
+# y_val = y[N_train:N_val]
+
+# sess = tf.Session()
+# sess.run(tf.global_variables_initializer())
+# vgg.load_parameters(sess,'../data/vgg16/vgg16_weights.npz',rand_init = ['fc8_W', 'fc8_b'])
+# vgg.train_2(sess,X_train,y_train,X_val,y_val,z)
+
+vgg.save_parameters(sess, '../model/vgg_v1/')

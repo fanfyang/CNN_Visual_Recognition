@@ -2,7 +2,6 @@ from model_vgg16 import *
 from model_svm import *
 from model_alexNet import *
 
-
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--v', help = 'version')
@@ -28,11 +27,11 @@ elif model == 'svm':
 	config = Config()
 	svm = svm(config)
 	sess = tf.Session()
-	vgg.load_parameters(sess,'../model/svm/para_' + version + '.npz')
-	print('test accu: %0.4f' % (1-vgg.error(sess,X_test-vgg._channel_mean,y_test)))
+	svm.load_parameters(sess,'../model/svm/para_' + version + '.npz')
+	print('test accu: %0.4f' % (1-svm.error(sess,X_test-vgg._channel_mean,y_test)))
 else:
 	config = Config()
 	alex = model_alexNet(config)
 	sess = tf.Session()
-	vgg.load_parameters(sess,'../model/alex/para_' + version + '.npz')
-	print('test accu: %0.4f' % (1-vgg.error(sess,X_test-vgg._channel_mean,y_test)))
+	alex.load_parameters(sess,'../model/alex/para_' + version + '.npz')
+	print('test accu: %0.4f' % (1-alex.error(sess,X_test-vgg._channel_mean,y_test)))

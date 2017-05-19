@@ -22,7 +22,7 @@ config = Config(**para)
 alex = model_alexNet(config)
 
 # Example 1
-x,y,z = fetch_data(file = True, resize = (227,227,3), cate_file = 'categories_small.txt', image_file = 'images_small.txt')
+x,y,z = fetch_data(file = True, resize = (227,227,3), cate_file = 'categories_10000.txt', image_file = 'images_10000.txt')
 x -= alex._channel_mean
 X_train = x[:700]
 X_val = x[700:]

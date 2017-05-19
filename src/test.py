@@ -32,10 +32,10 @@ elif model == 'svm':
 	svm = svm(config)
 	sess = tf.Session()
 	svm.load_parameters(sess,'../model/svm/para_' + version + '.npz')
-	print('test accu: %0.4f' % (1-svm.error(sess,X_test-vgg._channel_mean,y_test)))
+	print('test accu: %0.4f' % (1-svm.error(sess,X_test-svm._channel_mean,y_test)))
 else:
 	config = Config(num_classes = num_classes, batch_size = batch_size)
 	alex = model_alexNet(config)
 	sess = tf.Session()
 	alex.load_parameters(sess,'../model/alex/para_' + version + '.npz')
-	print('test accu: %0.4f' % (1-alex.error(sess,X_test-vgg._channel_mean,y_test)))
+	print('test accu: %0.4f' % (1-alex.error(sess,X_test-alex._channel_mean,y_test)))

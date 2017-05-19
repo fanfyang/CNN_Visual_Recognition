@@ -12,7 +12,7 @@ class model_vgg16(model):
 
 		self._channel_mean = np.array([ 203.89836428,  191.68313589,  180.50212764])
 		sys.path.append(os.path.abspath(os.path.join(os.getcwd(), os.pardir, 'data/vgg16')))
-		from imagenet_classes import *
+		from imagenet_classes import class_names
 		self._class_names = class_names
 		self._parameters = dict()
 
@@ -194,7 +194,7 @@ class model_vgg16_20(model):
 
 		self._channel_mean = np.array([ 203.89836428,  191.68313589,  180.50212764])
 		sys.path.append(os.path.abspath(os.path.join(os.getcwd(), os.pardir, 'data')))
-		from categories import *
+		from categories import class_names
 		self._class_names = class_names
 		self._parameters = dict()
 

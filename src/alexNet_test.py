@@ -24,10 +24,18 @@ alex = model_alexNet(config)
 # Example 1
 x,y,z = fetch_data(file = True, resize = (227,227,3), cate_file = 'categories_10000.txt', image_file = 'images_10000.txt')
 x -= alex._channel_mean
-X_train = x[:700]
-X_val = x[700:]
-y_train = y[:700]
-y_val = y[700:]
+# X_train = x[:700]
+# X_val = x[700:]
+# y_train = y[:700]
+# y_val = y[700:]
+
+N = len(y)
+N_train = N // 10 * 7
+N_val = N // 10 * 9
+X_train = x[:N_train]
+X_val = x[N_train:N_val]
+y_train = y[:N_train]
+y_val = y[N_train:N_val]
 # print('===========', X_train.shape, X_val.shape, y_train.shape, y_val.shape, '===============')
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())

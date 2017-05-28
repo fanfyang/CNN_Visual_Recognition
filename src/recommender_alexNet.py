@@ -1,0 +1,1 @@
+alex = model_alexNet(config)

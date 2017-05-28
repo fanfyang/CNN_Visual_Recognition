@@ -1,5 +1,5 @@
 from model_alexNet import *
-form time import time
+from time import time
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--lr', help = 'learning rate', nargs='?', default=0.0005)

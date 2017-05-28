@@ -1,16 +1,17 @@
 from model_alexNet import *
+form time import time
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--lr', help = 'learning rate')
+parser.add_argument('--lr', help = 'learning rate', nargs='?', default=0.0005)
 parser.add_argument('--dr', help = 'decay_rate')
 parser.add_argument('--ds', help = 'decay steps')
-parser.add_argument('--l2', help = 'regularization')
-parser.add_argument('--bs', help = 'batch size')
-parser.add_argument('--ne', help = 'number of epoches')
-parser.add_argument('--d', help = 'droupout')
-parser.add_argument('--nc', help = 'number of classes')
+parser.add_argument('--l2', help = 'regularization', nargs='?', default=0.005)
+parser.add_argument('--bs', help = 'batch size', nargs='?', default=128)
+parser.add_argument('--ne', help = 'number of epoches', nargs='?', default=2)
+parser.add_argument('--d', help = 'droupout', nargs='?', default=0.0)
+parser.add_argument('--nc', help = 'number of classes', nargs='?', default=20)
 parser.add_argument('--bn', help = 'batch normalization')
-parser.add_argument('--v', help = 'version')
+parser.add_argument('--v', help = 'version', nargs='?', default=time())
 args = parser.parse_args()
 
 version = args.v

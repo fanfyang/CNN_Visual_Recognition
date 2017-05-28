@@ -22,6 +22,19 @@ config = Config(**para)
 # config = Config(num_classes = 20, batch_size = 70, lr = 0.001, l2 = 0.0)
 alex = model_alexNet(config)
 
+def alex_train(model, sess, X_train, y_train, X_val, y_val, version):
+	val_acc_current_best = 0.0
+	for i in range(model._config.num_epoch):
+		print('Epoch %d / %d'%(i+1,model._config.num_epoch))
+		model.run_epoch(sess, X_train, y_train)
+		train_acc = 1-model.error(sess, X_train, y_train)
+		val_acc = 1-model.error(sess, X_val, y_val)
+		print('train acc: %0.4f; val acc: %0.4f \n' % (train_acc, val_acc))
+		if val_acc > val_acc_current_best:
+			val_acc_current_best = val_acc
+			model.save_parameters(sess, '../../../FYang/model/Alex/',version)
+
+
 # Example 1
 x,y,z = fetch_data(file = True, resize = (227,227,3), cate_file = 'categories_10000.txt', image_file = 'images_10000.txt')
 x -= alex._channel_mean
@@ -41,20 +54,10 @@ y_val = y[N_train:N_val]
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 alex.load_parameters_npy(sess,'../data/alex/bvlc_alexnet.npy',rand_init = ['fc8'])
-train(alex,sess,X_train,y_train,X_val,y_val,version)
+alex_train(alex,sess,X_train,y_train,X_val,y_val,version)
 
 
-def train(model, sess, X_train, y_train, X_val, y_val, version):
-	val_acc_current_best = 0.0
-	for i in range(model._config.num_epoch):
-		print('Epoch %d / %d'%(i+1,model._config.num_epoch))
-		model.run_epoch(sess, X_train, y_train)
-		train_acc = 1-model.error(sess, X_train, y_train)
-		val_acc = 1-model.error(sess, X_val, y_val)
-		print('train acc: %0.4f; val acc: %0.4f \n' % (train_acc, val_acc))
-		if val_acc > val_acc_current_best:
-			val_acc_current_best = val_acc
-			model.save_parameters(sess, '../../../FYang/model/Alex/',version)
+
 
 
 # # Example 2

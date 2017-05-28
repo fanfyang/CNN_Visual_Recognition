@@ -11,7 +11,7 @@ parser.add_argument('--ne', help = 'number of epoches', nargs='?', default=2)
 parser.add_argument('--d', help = 'droupout', nargs='?', default=0.0)
 parser.add_argument('--nc', help = 'number of classes', nargs='?', default=20)
 parser.add_argument('--bn', help = 'batch normalization')
-parser.add_argument('--v', help = 'version', nargs='?', default=time())
+parser.add_argument('--v', help = 'version', nargs='?', default=str(time()))
 args = parser.parse_args()
 
 version = args.v

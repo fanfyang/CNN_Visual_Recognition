@@ -41,7 +41,21 @@ y_val = y[N_train:N_val]
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 alex.load_parameters_npy(sess,'../data/alex/bvlc_alexnet.npy',rand_init = ['fc8'])
-alex.train(sess,X_train,y_train,X_val,y_val,version,model='alex')
+train(alex,sess,X_train,y_train,X_val,y_val,version)
+
+
+def train(model, sess, X_train, y_train, X_val, y_val, version):
+	val_acc_current_best = 0.0
+	for i in range(model._config.num_epoch):
+		print('Epoch %d / %d'%(i+1,model._config.num_epoch))
+		model.run_epoch(sess, X_train, y_train)
+		train_acc = 1-model.error(sess, X_train, y_train)
+		val_acc = 1-model.error(sess, X_val, y_val)
+		print('train acc: %0.4f; val acc: %0.4f \n' % (train_acc, val_acc))
+		if val_acc > val_acc_current_best:
+			val_acc_current_best = val_acc
+			model.save_parameters(sess, '../../../FYang/model/Alex/',version)
+
 
 # # Example 2
 # x,y,z = fetch_data_2(cate_file = 'categories.txt', image_file = 'images.txt')

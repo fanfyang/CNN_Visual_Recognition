@@ -158,13 +158,12 @@ if __name__ == '__main__':
 	args = parse_args()
 	weight = args.weight
 
-	
+	sess = tf.Session()
 	r_alex.load_parameters(sess, '../../../FYang/model/Alex/' + weight, rand_init=['fc8'])
 
 
 	x_base, y_base, z_base = fetch_data(file = True, resize = (227,227,3), cate_file = 'images_10000.txt', image_file = 'images_10000.txt')
 	x_base -= r_alex._channel_mean
-	sess = tf.Session()
 	feed_dict = {r_alex._input_placeholder:x_base, r_alex._label_placeholder:y_base, r_alex._dropout_placeholder:r_alex._config.dropout, r_alex._is_training_placeholder:False}
 	vector_base = sess.run(r_alex._vector, feed_dict=feed_dict)
 	print(vector_base.shape)

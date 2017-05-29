@@ -147,7 +147,7 @@ class recommender_alexNet(model):
 def parse_args():
 	parser = argparse.ArgumentParser(description="Run node2vec.")
 	parser.add_argument('--weight', nargs='?', default='weight.pyz', help='Input weight path')
-	return pasrser.parse_args()
+	return parser.parse_args()
 
 
 if __name__ == '__main__':

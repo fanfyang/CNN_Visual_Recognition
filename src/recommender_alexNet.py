@@ -10,7 +10,7 @@ def parse_args():
 if __name__ == '__main__':
 
 	config = Config()
-	alex = alexNet(config)
+	alex = model_alexNet(config)
 
 	args = parse_args()
 	weight = args.weight

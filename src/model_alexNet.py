@@ -131,6 +131,8 @@ class model_alexNet(model):
 			self._parameters['fc7_W'] = Wfc7
 			self._parameters['fc7_b'] = bfc7
 			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wfc7)))
+			
+			self._vector = fc7
 
 		with tf.variable_scope('alexNet/fc8') as scope:
 			Wfc8 = tf.get_variable('W',[4096,self._config.num_classes], trainable=True, initializer = tf.contrib.layers.xavier_initializer())

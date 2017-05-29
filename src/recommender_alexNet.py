@@ -159,7 +159,8 @@ if __name__ == '__main__':
 	weight = args.weight
 
 	sess = tf.Session()
-	r_alex.load_parameters(sess, '../../../FYang/model/Alex/' + weight, rand_init=['fc8_W', 'fc8_b'])
+
+	r_alex.load_parameters(sess, '../../../FYang/model/Alex/' + weight)
 
 
 	x_base, y_base, z_base = fetch_data(file = True, resize = (227,227,3), cate_file = 'categories_10000.txt', image_file = 'images_10000.txt')

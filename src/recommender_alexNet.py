@@ -152,7 +152,8 @@ def parse_args():
 
 if __name__ == '__main__':
 
-	r_alex = recommender_alexNet()
+	config = Config()
+	r_alex = recommender_alexNet(config)
 
 	args = parse_args()
 	weight = args.weight

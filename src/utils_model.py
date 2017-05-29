@@ -191,7 +191,7 @@ class model(object):
 	# You might want to re-define this function for your model
 	def predict(self, sess, image_path):
 		images = prepare_predict_data(image_path, self._channel_mean)
-		preds, = sess.run([self._pred], {self._input_placeholder:images, self._dropout_placeholder:1.})
+		preds, = sess.run([self._pred], {self._input_placeholder:images, self._dropout_placeholder:1., self._is_training_placeholder:False})
 		return preds
 
 	def predict_label(self, sess, image_path):
@@ -301,4 +301,4 @@ class model(object):
 		pred = sess.run(self._pred, feed_dict)
 		label = y[num_batches*self._config.batch_size:]
 		num_correct += np.sum(pred == label)
-		return 1 - num_correct * 1.0 / (num_batches * self._config.batch_size)
+		return 1 - num_correct * 1.0 / X_shape[0]

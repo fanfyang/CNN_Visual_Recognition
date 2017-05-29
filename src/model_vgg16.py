@@ -1,7 +1,5 @@
 from utils_model import *
 import tensorflow as tf
-sys.path.append(os.path.abspath(os.path.join(os.getcwd(), os.pardir, 'data/vgg16')))
-from imagenet_classes import *
 
 class model_vgg16(model):
 	def __init__(self):
@@ -13,7 +11,8 @@ class model_vgg16(model):
 		self._dropout_placeholder = tf.placeholder(dtype = tf.float32)
 
 		self._channel_mean = np.array([ 203.89836428,  191.68313589,  180.50212764])
-		global class_names
+		sys.path.append(os.path.abspath(os.path.join(os.getcwd(), os.pardir, 'data/vgg16')))
+		from imagenet_classes import class_names
 		self._class_names = class_names
 		self._parameters = dict()
 
@@ -194,7 +193,9 @@ class model_vgg16_20(model):
 		self._is_training_placeholder = tf.placeholder(dtype = tf.bool)
 
 		self._channel_mean = np.array([ 203.89836428,  191.68313589,  180.50212764])
-		# self._class_names = class_names
+		sys.path.append(os.path.abspath(os.path.join(os.getcwd(), os.pardir, 'data')))
+		from categories import class_names
+		self._class_names = class_names
 		self._parameters = dict()
 
 		with tf.variable_scope('vgg16_20/conv1_1') as scope:

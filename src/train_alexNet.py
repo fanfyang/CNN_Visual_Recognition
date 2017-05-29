@@ -26,7 +26,7 @@ alex = model_alexNet(config)
 
 def alex_train(model, sess, X_train, y_train, X_val, y_val, version):
 	val_acc_current_best = 0.0
-	userName = para.user
+	userName = args.user
 	for i in range(model._config.num_epoch):
 		print('Epoch %d / %d'%(i+1,model._config.num_epoch))
 		model.run_epoch(sess, X_train, y_train)

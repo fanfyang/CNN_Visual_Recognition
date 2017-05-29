@@ -161,7 +161,7 @@ class model_alexNet(model):
 if __name__ == '__main__':
 	alexNet = model_alexNet()
 	with tf.Session() as sess:
-		alexNet.load_parameters(sess,'../data/alexNet/alexNet_weights.npz')
+		alexNet.load_parameters(sess,'../data/alexNet/alexNet_weights.npy')
 		print(alexNet.predict_label(sess,['../data/img/test.jpg']))
 
 

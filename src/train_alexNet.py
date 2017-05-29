@@ -45,7 +45,7 @@ x -= alex._channel_mean
 
 N = len(y)
 N_train = N // 10 * 7
-N_val = N // 10 * 9
+N_val = N // 10 * 9   
 X_train = x[:N_train]
 X_val = x[N_train:N_val]
 y_train = y[:N_train]

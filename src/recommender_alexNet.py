@@ -9,7 +9,7 @@ def parse_args():
 
 if __name__ == '__main__':
 
-	config = Config(num_classes = 20)
+	config = Config(num_classes=20)
 	alex = model_alexNet(config)
 
 	args = parse_args()

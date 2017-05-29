@@ -12,6 +12,7 @@ parser.add_argument('--d', help = 'droupout', nargs='?', default=1)
 parser.add_argument('--nc', help = 'number of classes', nargs='?', default=20)
 parser.add_argument('--bn', help = 'batch normalization')
 parser.add_argument('--v', help = 'version', nargs='?', default=str(time()))
+parser.add_argument('--user', help= 'user name', nargs='?', default='FYang')
 args = parser.parse_args()
 
 version = args.v
@@ -22,8 +23,10 @@ config = Config(**para)
 # config = Config(num_classes = 20, batch_size = 70, lr = 0.001, l2 = 0.0)
 alex = model_alexNet(config)
 
+
 def alex_train(model, sess, X_train, y_train, X_val, y_val, version):
 	val_acc_current_best = 0.0
+	userName = para.user
 	for i in range(model._config.num_epoch):
 		print('Epoch %d / %d'%(i+1,model._config.num_epoch))
 		model.run_epoch(sess, X_train, y_train)
@@ -32,7 +35,7 @@ def alex_train(model, sess, X_train, y_train, X_val, y_val, version):
 		print('train acc: %0.4f; val acc: %0.4f \n' % (train_acc, val_acc))
 		if val_acc > val_acc_current_best:
 			val_acc_current_best = val_acc
-			model.save_parameters(sess, '../../../FYang/model/Alex/',version)
+			model.save_parameters(sess, '../../../'+ userName + '/model/Alex/',version)
 
 
 # Example 1

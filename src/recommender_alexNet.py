@@ -45,7 +45,7 @@ def run_epoch(model, sess, X, y, shuffle = True, batch_per_print = 2):
 	return features.reshape(-1, features.shape[2])
 
 def cosine(x1, x2):
-	return np.dot(x1, x2)/(np.norm(x1)*np.norm(x2))
+	return np.dot(x1, x2)/(np.linalg.norm(x1)*np.linalg.norm(x2))
 
 
 def top_similar_item(x_base, y_base, x_test, y_test, k):

@@ -44,7 +44,7 @@ def run_epoch(model, sess, X, y, shuffle = True, batch_per_print = 2):
 	features = np.array(features)
 	return features.reshape(-1, features.shape[2])
 
-def cosine(x1, x2, k):
+def cosine(x1, x2):
 	return np.dot(x1, x2)/(np.norm(x1)*np.norm(x2))
 
 

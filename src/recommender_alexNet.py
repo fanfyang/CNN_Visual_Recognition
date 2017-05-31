@@ -63,7 +63,7 @@ if __name__ == '__main__':
 	# vector_base = sess.run(alex._vector, feed_dict=feed_dict)
 	features = run_epoch(alex, sess, x_base, y_base, shuffle = False)
 
-	# print(vector_base.shape)
+	print(features.shape)
 
 	# x_test, y_test, z_test = fetch_data(file = True, resize = (227,227,3), cate_file = 'images_small.txt', image_file = 'images_small.txt')
 	# x_test -= r_alex._channel_mean	

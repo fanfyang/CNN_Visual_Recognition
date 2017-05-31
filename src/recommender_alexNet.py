@@ -70,7 +70,7 @@ if __name__ == '__main__':
 	# vector_base = sess.run(alex._vector, feed_dict=feed_dict)
 	features_base = run_epoch(alex, sess, x_base, y_base, shuffle = False)
 
-	print(features.shape)
+	print(features_base.shape)
 
 	x_test, y_test, z_test = fetch_data(file = True, resize = (227,227,3), cate_file = cate_test, image_file = image_base)
 	features_test = run_epoch(alex, sess, x_test, y_base, shuffle = False)

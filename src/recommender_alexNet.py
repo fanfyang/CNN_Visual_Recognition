@@ -30,8 +30,6 @@ def run_epoch(model, sess, X, y, shuffle = True, batch_per_print = 2):
 		vector = sess.run(model._vector, feed_dict)
 		# print('loss: ' + str(loss))
 		# total_loss.append(loss)
-		print(type(vector))
-		print(vector.shape)
 		features.append(vector)
 		# accu.append(1.*np.sum(pred==y_batch)/self._config.batch_size)
 		if (i+1)//batch_per_print*batch_per_print == i+1:
@@ -43,7 +41,7 @@ def run_epoch(model, sess, X, y, shuffle = True, batch_per_print = 2):
 	
 	sys.stdout.write('\r '+str(num_batches)+' / '+str(num_batches)+' [' + '='*len_eq + '] - %0.2fs  \n'%(float(time.time()-start)))
 	sys.stdout.flush()
-	return features
+	return np.array(features)
 
 
 
@@ -70,11 +68,12 @@ if __name__ == '__main__':
 	x_base -= alex._channel_mean
 	# feed_dict = {alex._input_placeholder:x_base, alex._label_placeholder:y_base, alex._dropout_placeholder:alex._config.dropout, alex._is_training_placeholder:False}
 	# vector_base = sess.run(alex._vector, feed_dict=feed_dict)
-	features = run_epoch(alex, sess, x_base, y_base, shuffle = False)
+	features_base = run_epoch(alex, sess, x_base, y_base, shuffle = False)
 
-	# print(len(features))
+	print(features.shape)
 
 	x_test, y_test, z_test = fetch_data(file = True, resize = (227,227,3), cate_file = cate_test, image_file = image_base)
+	features_test = run_epoch(alex, sess, x_test, y_base, shuffle = False)
 
 	# x_test, y_test, z_test = fetch_data(file = True, resize = (227,227,3), cate_file = 'images_small.txt', image_file = 'images_small.txt')
 	# x_test -= r_alex._channel_mean	

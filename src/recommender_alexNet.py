@@ -1,5 +1,5 @@
 from model_alexNet import *
-
+import operator
 
 def parse_args():
 	parser = argparse.ArgumentParser(description="Run alex net recommender.")
@@ -44,6 +44,21 @@ def run_epoch(model, sess, X, y, shuffle = True, batch_per_print = 2):
 	features = np.array(features)
 	return features.reshape(-1, features.shape[2])
 
+def cosine(x1, x2, k):
+	return np.dot(x1, x2)/(np.norm(x1)*np.norm(x2))
+
+
+def top_similar_item(x_base, y_base, x_test, y_test, k):
+	similarities = {}
+	for i in range(y_test.shape[0]):
+		s = {}
+		for j in range(y_base.shape[0]):
+			s[y_base[j]] = cosine(x_base[j], x_test[i])
+		similarities[y_test[i]] = sorted(s.items(), key=operator.itemgetter(1), reverse=True)[0:k]
+	return similarities
+
+
+
 
 
 
@@ -71,10 +86,15 @@ if __name__ == '__main__':
 	# vector_base = sess.run(alex._vector, feed_dict=feed_dict)
 	features_base = run_epoch(alex, sess, x_base, y_base, shuffle = False)
 
-	print(features_base.shape)
+	# print(features_base.shape)
 
-	x_test, y_test, z_test = fetch_data(file = True, resize = (227,227,3), cate_file = cate_test, image_file = image_base)
-	features_test = run_epoch(alex, sess, x_test, y_base, shuffle = False)
+	x_test, y_test, z_test = fetch_data(file = True, resize = (227,227,3), cate_file = cate_test, image_file = image_test)
+	features_test = run_epoch(alex, sess, x_test, y_test, shuffle = False)
+
+	similarities = top_similar_item(features_base, y_base, features_test, y_test, 2)
+	print(similarities)
+
+
 
 	# x_test, y_test, z_test = fetch_data(file = True, resize = (227,227,3), cate_file = 'images_small.txt', image_file = 'images_small.txt')
 	# x_test -= r_alex._channel_mean	

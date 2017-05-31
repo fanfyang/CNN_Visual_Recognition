@@ -4,7 +4,8 @@ from model_alexNet import *
 def parse_args():
 	parser = argparse.ArgumentParser(description="Run alex net recommender.")
 	parser.add_argument('--weight', nargs='?', default='weight.pyz', help='Input weight path')
-	# parser.add_argument('--base', nargs='?', default='')
+	parser.add_argument('--base', nargs='?', default='10000')
+	parser.add_argument('--test', nargs='?', default='small')
 	return parser.parse_args()
 
 def run_epoch(model, sess, X, y, shuffle = True, batch_per_print = 2):
@@ -29,6 +30,8 @@ def run_epoch(model, sess, X, y, shuffle = True, batch_per_print = 2):
 		vector = sess.run(model._vector, feed_dict)
 		# print('loss: ' + str(loss))
 		# total_loss.append(loss)
+		print(type(vector))
+		print(vector.shape)
 		features.append(vector)
 		# accu.append(1.*np.sum(pred==y_batch)/self._config.batch_size)
 		if (i+1)//batch_per_print*batch_per_print == i+1:
@@ -52,21 +55,26 @@ if __name__ == '__main__':
 
 	args = parse_args()
 	weight = args.weight
+	cate_base = 'categories_' + args.base + '.txt'
+	image_base = 'images_' + args.base + '.txt'
+	cate_test = 'categories_' + args.test + '.txt'
+	image_test = 'images_' + args.test + '.txt'
+
 
 	sess = tf.Session()
 
 	alex.load_parameters(sess, '../../../FYang/model/Alex/' + weight)
 
 
-	x_base, y_base, z_base = fetch_data(file = True, resize = (227,227,3), cate_file = 'categories_10000.txt', image_file = 'images_10000.txt')
+	x_base, y_base, z_base = fetch_data(file = True, resize = (227,227,3), cate_file = cate_base, image_file = image_base)
 	x_base -= alex._channel_mean
 	# feed_dict = {alex._input_placeholder:x_base, alex._label_placeholder:y_base, alex._dropout_placeholder:alex._config.dropout, alex._is_training_placeholder:False}
 	# vector_base = sess.run(alex._vector, feed_dict=feed_dict)
 	features = run_epoch(alex, sess, x_base, y_base, shuffle = False)
 
-	print(len(features))
+	# print(len(features))
 
-	# x_test, y_test, z_test = fetch_data(file = True, resize = (227,227,3), cate_file = 'categories_10000.txt', image_file = 'images_10000.txt')
+	x_test, y_test, z_test = fetch_data(file = True, resize = (227,227,3), cate_file = cate_test, image_file = image_base)
 
 	# x_test, y_test, z_test = fetch_data(file = True, resize = (227,227,3), cate_file = 'images_small.txt', image_file = 'images_small.txt')
 	# x_test -= r_alex._channel_mean	

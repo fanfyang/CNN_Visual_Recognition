@@ -50,9 +50,9 @@ def cosine(x1, x2):
 
 def top_similar_item(x_base, y_base, x_test, y_test, k):
 	similarities = {}
-	for i in range(y_test.shape[0]):
+	for i in range(x_test.shape[0]):
 		s = {}
-		for j in range(y_base.shape[0]):
+		for j in range(x_base.shape[0]):
 			s[y_base[j]] = cosine(x_base[j], x_test[i])
 		similarities[y_test[i]] = sorted(s.items(), key=operator.itemgetter(1), reverse=True)[0:k]
 	return similarities

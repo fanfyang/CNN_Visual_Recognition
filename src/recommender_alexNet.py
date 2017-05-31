@@ -41,7 +41,8 @@ def run_epoch(model, sess, X, y, shuffle = True, batch_per_print = 2):
 	
 	sys.stdout.write('\r '+str(num_batches)+' / '+str(num_batches)+' [' + '='*len_eq + '] - %0.2fs  \n'%(float(time.time()-start)))
 	sys.stdout.flush()
-	return np.array(features).reshape(X.shape[0], -1)
+	features = np.array(features)
+	return features.reshape(-1, features.shape[2])
 
 
 

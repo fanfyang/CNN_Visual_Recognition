@@ -91,6 +91,7 @@ if __name__ == '__main__':
 	x_test, y_test, z_test = fetch_data(file = True, resize = (227,227,3), cate_file = cate_test, image_file = image_test)
 	features_test = run_epoch(alex, sess, x_test, y_test, shuffle = False)
 
+	print(features_base.shape, y_base.shape, features_test.shape, y_test.shape)
 	similarities = top_similar_item(features_base, y_base, features_test, y_test, 2)
 	print(similarities)
 

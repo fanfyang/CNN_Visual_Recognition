@@ -2,13 +2,13 @@ from model_alexNet import *
 
 
 def parse_args():
-	parser = argparse.ArgumentParser(description="Run node2vec.")
+	parser = argparse.ArgumentParser(description="Run alex net recommender.")
 	parser.add_argument('--weight', nargs='?', default='weight.pyz', help='Input weight path')
 	return parser.parse_args()
 
-def run_epoch(self, sess, X, y, shuffle = True, batch_per_print = 2):
+def run_epoch(model, sess, X, y, shuffle = True, batch_per_print = 2):
 	start = time.time()
-	num_batches = X.shape[0] // self._config.batch_size
+	num_batches = X.shape[0] // model._config.batch_size
 	idx = np.arange(X.shape[0])
 	if shuffle:
 		np.random.shuffle(idx)
@@ -21,11 +21,11 @@ def run_epoch(self, sess, X, y, shuffle = True, batch_per_print = 2):
 	features = []
 
 	for i in range(num_batches):
-		batch_idx = idx[i*self._config.batch_size:(i+1)*self._config.batch_size]
+		batch_idx = idx[i*model._config.batch_size:(i+1)*model._config.batch_size]
 		X_batch = X[batch_idx]
 		y_batch = y[batch_idx]
-		feed_dict = {self._input_placeholder:X_batch, self._label_placeholder:y_batch, self._dropout_placeholder:self._config.dropout, self._is_training_placeholder:False}
-		vector = sess.run(self._vector, feed_dict)
+		feed_dict = {model._input_placeholder:X_batch, model._label_placeholder:y_batch, model._dropout_placeholder:model._config.dropout, model._is_training_placeholder:False}
+		vector = sess.run(model._vector, feed_dict)
 		# print('loss: ' + str(loss))
 		# total_loss.append(loss)
 		features.append(vector)
@@ -61,8 +61,8 @@ if __name__ == '__main__':
 	x_base -= alex._channel_mean
 	# feed_dict = {alex._input_placeholder:x_base, alex._label_placeholder:y_base, alex._dropout_placeholder:alex._config.dropout, alex._is_training_placeholder:False}
 	# vector_base = sess.run(alex._vector, feed_dict=feed_dict)
-	features = run_epoch(self, sess, x_base, y_base, shuffle = False)
-	
+	features = run_epoch(alex, sess, x_base, y_base, shuffle = False)
+
 	# print(vector_base.shape)
 
 	# x_test, y_test, z_test = fetch_data(file = True, resize = (227,227,3), cate_file = 'images_small.txt', image_file = 'images_small.txt')

@@ -92,7 +92,7 @@ if __name__ == '__main__':
 	features_test = run_epoch(alex, sess, x_test, y_test, shuffle = False)
 
 	print(features_base.shape, len(z_base), features_test.shape, len(z_test))
-	similarities = top_similar_item(features_base, z_base, features_test, z_test, 2)
+	similarities = top_similar_item(features_base, y_base, features_test, y_test, 2)
 	print(similarities)
 
 

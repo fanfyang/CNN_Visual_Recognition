@@ -48,13 +48,19 @@ def cosine(x1, x2):
 	return np.dot(x1, x2)/(np.linalg.norm(x1)*np.linalg.norm(x2))
 
 
-def top_similar_item(x_base, y_base, x_test, y_test, k):
-	similarities = {}
+def top_similar_item(features_base, x_base, y_base, 
+					 features_test, x_test, y_test, 
+					 k, output_file):
+	outputWriter = open(output_file, 'w')
+
 	for i in range(x_test.shape[0]):
 		s = {}
 		for j in range(x_base.shape[0]):
-			s[y_base[j]] = cosine(x_base[j], x_test[i])
-		similarities[y_test[i]] = sorted(s.items(), key=operator.itemgetter(1), reverse=True)[0:k]
+			if y_base[j] != y_test[i]:
+				continue
+			s[j] = cosine(x_base[j], x_test[i])
+		
+		similarities[i] = [key for key, value in sorted(s.items(), key=operator.itemgetter(1), reverse=True)[0:k]]
 	return similarities
 
 
@@ -85,14 +91,18 @@ if __name__ == '__main__':
 	# feed_dict = {alex._input_placeholder:x_base, alex._label_placeholder:y_base, alex._dropout_placeholder:alex._config.dropout, alex._is_training_placeholder:False}
 	# vector_base = sess.run(alex._vector, feed_dict=feed_dict)
 	features_base = run_epoch(alex, sess, x_base, y_base, shuffle = False)
+	# features_base = {}
+	# for i in z_base:
+		# features_base[i] = features_base_all[np.array([i for i, j in enumerate(y_base) if j == i])]
+
 
 	# print(features_base.shape)
 
 	x_test, y_test, z_test = fetch_data(file = True, resize = (227,227,3), cate_file = cate_test, image_file = image_test)
 	features_test = run_epoch(alex, sess, x_test, y_test, shuffle = False)
 
-	print(features_base.shape, len(z_base), features_test.shape, len(z_test))
-	similarities = top_similar_item(features_base, y_base, features_test, y_test, 2)
+	# print(features_base.shape, len(z_base), features_test.shape, len(z_test))
+	similarities = top_similar_item(features_base, x_base, y_base, features_test, x_test, y_test, 2)
 	print(similarities)
 
 

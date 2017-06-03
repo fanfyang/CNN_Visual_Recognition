@@ -23,7 +23,6 @@ def recommend(sess, model, features, labels, categories, files, image_path):
 		feature = feature_pred[i]
 		sample_features, sample_files = subsample(features, labels, files, label)
 		features_normalization = feature_normalization(sample_features)
-		feature = sess.run(model)
 		idx = top_similar_cosine(features_normalization, feature)
 		temp = (categories[label], [sample_files[i] for i in idx])
 		recommendation.append(temp)

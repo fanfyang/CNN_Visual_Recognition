@@ -35,14 +35,14 @@ version = args.v
 para = parse_argument(args)
 
 config = Config(**para)
-vgg = model_vgg16_20(config)
-sess = tf.Session()
-sess.run(tf.global_variables_initializer())
-vgg.load_parameters(sess,'../model/vgg/para_' + str(version) + '.npz')
+# vgg = model_vgg16_20(config)
+# sess = tf.Session()
+# sess.run(tf.global_variables_initializer())
+# vgg.load_parameters(sess,'../model/vgg/para_' + str(version) + '.npz')
 
-images, labels, categories, files = fetch_data(file = True, cate_file = 'categories_10000.txt', image_file = 'images_10000.txt', filenames = True, shuffle = False)
+# images, labels, categories, files = fetch_data(file = True, cate_file = 'categories_10000.txt', image_file = 'images_10000.txt', filenames = True, shuffle = False)
 
-features = np.load('../model/vgg/feature_' + str(version) + '.npz')['feature']
+# features = np.load('../model/vgg/feature_' + str(version) + '.npz')['feature']
 
 app = Flask(__name__)
 
@@ -50,8 +50,10 @@ app = Flask(__name__)
 @support_jsonp
 def model_recommend_api():
 	img = request.args.get('img','')
+    print(img)
 	try:
 		path = '../data/'+ img + '.jpg'
+        print(path)
 		category, files = recommend(sess, vgg, features, labels, categories, files, [path])[0]
 		response = {'status':0, 'category':category, 'recommendations':files}
 	except:

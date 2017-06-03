@@ -199,11 +199,11 @@ class model(object):
 	# You might want to re-define this function for your model
 	def predict(self, sess, image_path):
 		images = prepare_predict_data(image_path, self._channel_mean)
-		preds, = sess.run([self._pred], {self._input_placeholder:images, self._dropout_placeholder:1., self._is_training_placeholder:False})
-		return preds
+		preds, features = sess.run([self._pred, self._feature], {self._input_placeholder:images, self._dropout_placeholder:1., self._is_training_placeholder:False})
+		return preds, features
 
 	def predict_label(self, sess, image_path):
-		preds = self.predict(sess, image_path)
+		preds, = self.predict(sess, image_path)
 		return [self._class_names[i] for i in preds]
 
 	# You might want to re-define this function for your model

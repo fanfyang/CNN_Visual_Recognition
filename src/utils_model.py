@@ -313,7 +313,6 @@ class model(object):
 		feature = sess.run(self._feature, feed_dict)
 		features.append(feature)
 		features = np.concatenate(features, axis = 0)
-		print(features.shape)
 		if version is not None:
 			np.savez('../model/vgg/feature_' + version + '.npz', feature = features)
 		return features

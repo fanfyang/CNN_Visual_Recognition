@@ -19,26 +19,30 @@ para = parse_argument(args)
 
 config = Config(**para)
 vgg = model_vgg16_20(config)
-
-images, labels, _ = fetch_data(file = True, cate_file = 'categories_10000.txt', image_file = 'images_10000.txt')
-x = images - vgg._channel_mean
-
-N = len(labels)
-N_train = N // 10 * 7
-N_val = N // 10 * 9
-X_train = x[:N_train]
-X_val = x[N_train:N_val]
-X_test = x[N_val:]
-y_train = labels[:N_train]
-y_val = labels[N_train:N_val]
-y_test = labels[N_val:]
-
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 vgg.load_parameters(sess,'../model/vgg/para_' + str(version) + '.npz')
 
-print(vgg.error(sess, X_train, y_train))
-print(vgg.error(sess, X_val, y_val))
-print(vgg.error(sess, X_test, y_test))
+images, labels, categories, files = fetch_data(file = True, cate_file = 'categories_10000.txt', image_file = 'images_10000.txt', filenames = True, shuffle = False)
+# images, labels, categories = fetch_data(file = True, cate_file = 'categories_10000.txt', image_file = 'images_10000.txt', filenames = False, shuffle = True)
+x = images - vgg._channel_mean
+
+# N = len(labels)
+# N_train = N // 10 * 7
+# N_val = N // 10 * 9
+# X_train = x[:N_train]
+# X_val = x[N_train:N_val]
+# X_test = x[N_val:]
+# y_train = labels[:N_train]
+# y_val = labels[N_train:N_val]
+# y_test = labels[N_val:]
+
+# print(vgg.error(sess, X_train, y_train))
+# print(vgg.error(sess, X_val, y_val))
+# print(vgg.error(sess, X_test, y_test))
 
 vgg.extract_feature(sess, x, is_training = False, version = version)
+print(files[0])
+print(categories[labels[0]])
+print(files[-1])
+print(categories[labels[-1]])

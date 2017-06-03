@@ -19,9 +19,10 @@ def prepare_train_data(num_per_cate = 50000, path = '../data', dtype = '.jpg'):
 		for i in range(len(categories)):
 			f.write(categories[i]+'\t%d\n'%(num_cate[i]))
 
-def fetch_data(path = '../data', resize = (224,224,3), file = False, dtype = '.jpg', cate_file = 'categories.txt', image_file = 'images.txt'):
+def fetch_data(path = '../data', resize = (224,224,3), file = False, dtype = '.jpg', cate_file = 'categories.txt', image_file = 'images.txt', filenames = False, shuffle = True):
 	images = list()
 	labels = list()
+	files = list()
 	if file == True:
 		with open(os.path.join(path, cate_file), 'r') as f:
 			temp = f.readlines()
@@ -37,17 +38,24 @@ def fetch_data(path = '../data', resize = (224,224,3), file = False, dtype = '.j
 				category = categories[i]
 				for j in range(num_cate[i]):
 					try:
-						image = ndimage.imread(os.path.join(path, 'img', category, f.readline().rstrip('\n')+dtype))
+						file_name = f.readline().rstrip('\n')
+						image = ndimage.imread(os.path.join(path, 'img', category, file_name+dtype))
 						if len(image.shape) != 3 and image.shape[3] != 3:
 							continue
 						image_resized = imresize(image, resize)
 						images.append(image_resized)
+						files.append(file_name)
 					except:
 						num_fail[i] += 1
 		labels = np.concatenate([[i] * (num_cate[i]-num_fail[i]) for i in range(len(categories))])
 		idx = np.arange(len(labels))
-		np.random.shuffle(idx)
-		return (np.array(images,dtype=np.float32)[idx], labels[idx], categories)
+		if shuffle:
+			np.random.shuffle(idx)
+		if filenames:
+			files = [files[i] for i in idx]
+			return (np.array(images,dtype=np.float32)[idx], labels[idx], categories, files)
+		else:
+			return (np.array(images,dtype=np.float32)[idx], labels[idx], categories)
 	else:
 		categories = [item for item in os.listdir(os.path.join(path,'img')) if item[0] != '.']
 		for i in range(len(categories)):

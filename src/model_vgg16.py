@@ -348,6 +348,7 @@ class model_vgg16_20(model):
 			if self._config.use_batch_norm:
 				fc7 = tf.layers.batch_normalization(inputs = fc7, scale = True, center = True, training = self._is_training_placeholder, trainable = True)
 			fc7 = tf.nn.dropout(fc7, self._dropout_placeholder)
+			self._feature = fc7
 			self._parameters['fc7_W'] = Wfc7
 			self._parameters['fc7_b'] = bfc7
 			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wfc7)))

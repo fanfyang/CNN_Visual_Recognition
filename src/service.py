@@ -50,7 +50,6 @@ app = Flask(__name__)
 @support_jsonp
 def model_recommend_api():
 	img = request.args.get('img','')
-    print(img)
 	try:
 		path = '../data/'+ img + '.jpg'
         print(path)

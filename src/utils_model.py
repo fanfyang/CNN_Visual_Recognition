@@ -300,7 +300,7 @@ class model(object):
 		pred = sess.run(self._pred, feed_dict)
 		label = y[num_batches*self._config.batch_size:]
 		num_correct += np.sum(pred == label)
-		return 1 - num_correct * 1.0 / (num_batches * self._config.batch_size)
+		return 1 - num_correct * 1.0 / X.shape[0]
 
 	def extract_feature(self, sess, X, is_training = False):
 		num_batches = X.shape[0] // self._config.batch_size

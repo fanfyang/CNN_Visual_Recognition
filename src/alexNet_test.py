@@ -1,4 +1,4 @@
-from model_vgg16 import *
+from model_alexNet import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--lr', help = 'learning rate')
@@ -19,11 +19,16 @@ para = parse_argument(args)
 
 config = Config(**para)
 # config = Config(num_classes = 20, batch_size = 70, lr = 0.001, l2 = 0.0)
-vgg = model_vgg16_20(config)
+alex = model_alexNet(config)
 
 # Example 1
-x,y,class_names = fetch_data(file = True, cate_file = 'categories_10000.txt', image_file = 'images_10000.txt')
-x -= vgg._channel_mean
+x,y,z = fetch_data(file = True, resize = (227,227,3), cate_file = 'categories_10000.txt', image_file = 'images_10000.txt')
+x -= alex._channel_mean
+# X_train = x[:700]
+# X_val = x[700:]
+# y_train = y[:700]
+# y_val = y[700:]
+
 N = len(y)
 N_train = N // 10 * 7
 N_val = N // 10 * 9
@@ -31,11 +36,11 @@ X_train = x[:N_train]
 X_val = x[N_train:N_val]
 y_train = y[:N_train]
 y_val = y[N_train:N_val]
-
+# print('===========', X_train.shape, X_val.shape, y_train.shape, y_val.shape, '===============')
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
-vgg.load_parameters(sess,'../data/vgg16/vgg16_weights.npz',rand_init = ['fc8_W', 'fc8_b'])
-vgg.train(sess,X_train,y_train,X_val,y_val,version, model = 'vgg')
+alex.load_parameters_npy(sess,'../data/alex/bvlc_alexnet.npy',rand_init = ['fc8'])
+alex.train(sess,X_train,y_train,X_val,y_val,version,model='alex')
 
 # # Example 2
 # x,y,z = fetch_data_2(cate_file = 'categories.txt', image_file = 'images.txt')
@@ -49,5 +54,6 @@ vgg.train(sess,X_train,y_train,X_val,y_val,version, model = 'vgg')
 
 # sess = tf.Session()
 # sess.run(tf.global_variables_initializer())
-# vgg.load_parameters(sess,'../data/vgg16/vgg16_weights.npz',rand_init = ['fc8_W', 'fc8_b'])
-# vgg.train_2(sess,X_train,y_train,X_val,y_val,z)
+# alex.load_parameters_npy(sess,'../data/alex/bvlc_alexnet.npy',rand_init = ['fc8'])
+# alex.train_2(sess,X_train,y_train,X_val,y_val,z, resize = (227,227,3))
+# alex.save_parameters(sess, '../model/alex_v1/')

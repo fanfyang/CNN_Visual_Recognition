@@ -33,5 +33,6 @@ y_val = y[N_train:N_val]
 y_test = y[N_val:]
 
 sess = tf.Session()
+sess.run(tf.global_variables_initializer())
 vgg.load_parameters(sess,'../model/vgg/para_' + str(version) + '.npz')
 print(vgg.error(sess, X_test, y_test))

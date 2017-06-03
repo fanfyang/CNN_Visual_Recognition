@@ -301,3 +301,15 @@ class model(object):
 		label = y[num_batches*self._config.batch_size:]
 		num_correct += np.sum(pred == label)
 		return 1 - num_correct * 1.0 / X.shape[0]
+
+	def extract_feature(self, sess, X, is_training = False):
+		num_batches = X.shape[0] // self._config.batch_size
+		features = list()
+		for i in range(num_batches):
+			feed_dict = {self._input_placeholder: X[i*self._config.batch_size:(i+1)*self._config.batch_size], self._dropout_placeholder:1.0, self._is_training_placeholder:is_training}
+			feature = sess.run(self._feature, feed_dict)
+			features.append(feature)
+		feed_dict = {self._input_placeholder: X[num_batches*self._config.batch_size:], self._dropout_placeholder:1.0, self._is_training_placeholder:is_training}
+		feature = sess.run(self._feature, feed_dict)
+		features.append(feature)
+		return np.concatenate(features, axis = 0)

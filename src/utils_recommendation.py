@@ -17,6 +17,7 @@ def top_similar_cosine(features, feature, num = 10):
 
 def recommend(sess, model, features, labels, categories, files, image_path):
 	label_pred, feature_pred = model.predict(sess, image_path)
+	print(image_path)
 	recommendation = []
 	for i in range(len(label_pred)):
 		label = label_pred[i]

@@ -191,7 +191,7 @@ class model(object):
 	# You might want to re-define this function for your model
 	def predict(self, sess, image_path):
 		images = prepare_predict_data(image_path, self._channel_mean)
-		preds, = sess.run([self._pred], {self._input_placeholder:images, self._dropout_placeholder:1.})
+		preds, = sess.run([self._pred], {self._input_placeholder:images, self._dropout_placeholder:1., self._is_training_placeholder:False})
 		return preds
 
 	def predict_label(self, sess, image_path):
@@ -300,16 +300,4 @@ class model(object):
 		pred = sess.run(self._pred, feed_dict)
 		label = y[num_batches*self._config.batch_size:]
 		num_correct += np.sum(pred == label)
-		return 1 - num_correct * 1.0 / (num_batches * self._config.batch_size)
-
-	def extract_feature(self, sess, X, is_training = False):
-		num_batches = X.shape[0] // self._config.batch_size
-		features = list()
-		for i in range(num_batches):
-			feed_dict = {self._input_placeholder: X[i*self._config.batch_size:(i+1)*self._config.batch_size], self._dropout_placeholder:1.0, self._is_training_placeholder:is_training}
-			feature = sess.run(self._feature, feed_dict)
-			features.append(feature)
-		feed_dict = {self._input_placeholder: X[num_batches*self._config.batch_size:], self._dropout_placeholder:1.0, self._is_training_placeholder:is_training}
-		feature = sess.run(self._feature, feed_dict)
-		features.append(feature)
-		return np.concatenate(features, axis = 0)
+		return 1 - num_correct * 1.0 / X.shape[0]

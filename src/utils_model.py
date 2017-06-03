@@ -302,7 +302,7 @@ class model(object):
 		num_correct += np.sum(pred == label)
 		return 1 - num_correct * 1.0 / X.shape[0]
 
-	def extract_feature(self, sess, X, is_training = False):
+	def extract_feature(self, sess, X, is_training = False, version = None):
 		num_batches = X.shape[0] // self._config.batch_size
 		features = list()
 		for i in range(num_batches):
@@ -312,4 +312,8 @@ class model(object):
 		feed_dict = {self._input_placeholder: X[num_batches*self._config.batch_size:], self._dropout_placeholder:1.0, self._is_training_placeholder:is_training}
 		feature = sess.run(self._feature, feed_dict)
 		features.append(feature)
-		return np.concatenate(features, axis = 0)
+		features = np.concatenate(features, axis = 0)
+		print(features.shape)
+		if version is not None:
+			np.savez('../model/vgg/feature_' + version + '.npz', feature = features)
+		return features

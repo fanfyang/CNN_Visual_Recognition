@@ -24,14 +24,30 @@ sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 vgg.load_parameters(sess,'../model/vgg/para_' + str(version) + '.npz')
 
-images, labels, categories, files = fetch_data(file = True, cate_file = 'categories_10000.txt', image_file = 'images_10000.txt', filenames = True, shuffle = False)
+categories = []
+files = []
+labels = []
+with open('../images.txt','r') as f:
+	n = int(f.readline().rstrip('\n'))
+	for _ in range(n):
+		categories.append(f.readline().rstrip('\n'))
+	while True:
+		temp = f.readline()
+		if temp == None:
+			break
+		file, label = temp.rstrip('\n').split('\t')
+		files.append(file)
+		labels.append(int(label))
+labels = np.array(labels)
 
-with open('../images.txt','w') as f:
-	f.write(str(len(categories)) + '\n')
-	for category in categories:
-		f.write(category + '\n')
-	for i in range(len(files)):
-		f.write(files[i] + '\t' + str(labels[i]) + '\n')
+# images, labels, categories, files = fetch_data(file = True, cate_file = 'categories_10000.txt', image_file = 'images_10000.txt', filenames = True, shuffle = False)
+
+# with open('../images.txt','w') as f:
+# 	f.write(str(len(categories)) + '\n')
+# 	for category in categories:
+# 		f.write(category + '\n')
+# 	for i in range(len(files)):
+# 		f.write(files[i] + '\t' + str(labels[i]) + '\n')
 
 features = np.load('../model/vgg/feature_' + str(version) + '.npz')['feature']
 

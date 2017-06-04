@@ -26,6 +26,13 @@ vgg.load_parameters(sess,'../model/vgg/para_' + str(version) + '.npz')
 
 images, labels, categories, files = fetch_data(file = True, cate_file = 'categories_10000.txt', image_file = 'images_10000.txt', filenames = True, shuffle = False)
 
+with open('../images.txt','w') as f:
+	f.write(str(len(categories)) + '\n')
+	for category in categories:
+		f.write(category + '\n')
+	for i in range(len(files)):
+		f.write(files[i] + '\t' + str(labels[i]) + '\n')
+
 features = np.load('../model/vgg/feature_' + str(version) + '.npz')['feature']
 
 recommendations = recommend(sess, vgg, features, labels, categories, files, ['../data/test.jpg'])

@@ -37,14 +37,9 @@ with open('../images.txt','r') as f:
 		if temp == None:
 			break
 		temp_split = temp.split('\t')
-		print(temp_split[0])
-		print(temp_split[1])
-		print(temp_split)
-		file = temp_split[0]
-		label = temp_split[1]
-		gdgd
-		files.append(file)
-		labels.append(int(label))
+		assert(len(temp_split)==2)
+		files.append(temp_split[0])
+		labels.append(int(temp_split[1]))
 labels = np.array(labels)
 
 features = np.load('../model/vgg/feature_' + str(version) + '.npz')['feature']

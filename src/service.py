@@ -4,18 +4,18 @@ from utils_recommendation import *
 # from functools import wraps
 from flask import Flask,request, redirect, current_app, jsonify
 
-# # define jsonp decorator/wrap for cross domain api call
-# def support_jsonp(f):
-#     """Wraps JSONified output for JSONP"""
-#     @wraps(f)
-#     def decorated_function(*args, **kwargs):
-#         callback = request.args.get('callback', False)
-#         if callback:
-#             content = str(callback) + '(' + str(f().data) + ')'
-#             return current_app.response_class(content, mimetype='application/json')
-#         else:
-#             return f(*args, **kwargs)
-#     return decorated_function
+# define jsonp decorator/wrap for cross domain api call
+def support_jsonp(f):
+    """Wraps JSONified output for JSONP"""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        callback = request.args.get('callback', False)
+        if callback:
+            content = str(callback) + '(' + str(f().data) + ')'
+            return current_app.response_class(content, mimetype='application/json')
+        else:
+            return f(*args, **kwargs)
+    return decorated_function
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--lr', help = 'learning rate')
@@ -47,15 +47,17 @@ features = np.load('../model/vgg/feature_' + str(version) + '.npz')['feature']
 app = Flask(__name__)
 
 @app.route("/recommend" , methods = ["GET"])
-# @support_jsonp
+@support_jsonp
 def model_recommend_api():
-	img = request.args.get('i','')
-	try:
-		path = '../data/'+ img + '.jpg'
-		category, files = recommend(sess, vgg, features, labels, categories, files, [path])[0]
-		response = {'status':0, 'category':category, 'recommendations':files}
-	except:
-		response = {'status':1}
-	return jsonify(response)
+    img = request.args.get('i','')
+    print(img)
+    try:
+        path = '../data/'+ img + '.jpg'
+        print(path)
+        category, files = recommend(sess, vgg, features, labels, categories, files, [path])[0]
+        response = {'status':0, 'category':category, 'recommendations':files}
+    except:
+        response = {'status':1}
+    return jsonify(response)
 
 app.run(host="127.0.0.1", port=5000, debug=True, use_reloader=False, processes=1)

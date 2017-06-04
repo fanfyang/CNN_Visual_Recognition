@@ -49,7 +49,7 @@ app = Flask(__name__)
 @app.route("/recommend" , methods = ["GET"])
 @support_jsonp
 def model_recommend_api():
-	img = request.args.get('img','')
+	img = request.args.get('i','')
 	try:
 		path = '../data/'+ img + '.jpg'
 		category, files = recommend(sess, vgg, features, labels, categories, files, [path])[0]

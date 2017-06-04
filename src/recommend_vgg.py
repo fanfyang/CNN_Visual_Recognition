@@ -36,7 +36,8 @@ with open('../images.txt','r') as f:
 		temp = f.readline().rstrip('\n')
 		if temp == None:
 			break
-		file, label = temp.split('\t')
+		file = temp.split('\t')[0]
+		label = temp.split('\t')[1]
 		files.append(file)
 		labels.append(int(label))
 labels = np.array(labels)

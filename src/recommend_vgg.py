@@ -36,20 +36,13 @@ with open('../images.txt','r') as f:
 		temp = f.readline().rstrip('\n')
 		if temp == None:
 			break
+		print(temp.split('\t'))
+		nknk
 		file = temp.split('\t')[0]
 		label = temp.split('\t')[1]
 		files.append(file)
 		labels.append(int(label))
 labels = np.array(labels)
-
-# images, labels, categories, files = fetch_data(file = True, cate_file = 'categories_10000.txt', image_file = 'images_10000.txt', filenames = True, shuffle = False)
-
-# with open('../images.txt','w') as f:
-# 	f.write(str(len(categories)) + '\n')
-# 	for category in categories:
-# 		f.write(category + '\n')
-# 	for i in range(len(files)):
-# 		f.write(files[i] + '\t' + str(labels[i]) + '\n')
 
 features = np.load('../model/vgg/feature_' + str(version) + '.npz')['feature']
 

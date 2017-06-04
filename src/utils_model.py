@@ -19,9 +19,10 @@ def prepare_train_data(num_per_cate = 50000, path = '../data', dtype = '.jpg'):
 		for i in range(len(categories)):
 			f.write(categories[i]+'\t%d\n'%(num_cate[i]))
 
-def fetch_data(path = '../data', resize = (224,224,3), file = False, dtype = '.jpg', cate_file = 'categories.txt', image_file = 'images.txt'):
+def fetch_data(path = '../data', resize = (224,224,3), file = False, dtype = '.jpg', cate_file = 'categories.txt', image_file = 'images.txt', filenames = False, shuffle = True):
 	images = list()
 	labels = list()
+	files = list()
 	if file == True:
 		with open(os.path.join(path, cate_file), 'r') as f:
 			temp = f.readlines()
@@ -37,17 +38,24 @@ def fetch_data(path = '../data', resize = (224,224,3), file = False, dtype = '.j
 				category = categories[i]
 				for j in range(num_cate[i]):
 					try:
-						image = ndimage.imread(os.path.join(path, 'img', category, f.readline().rstrip('\n')+dtype))
+						file_name = f.readline().rstrip('\n')
+						image = ndimage.imread(os.path.join(path, 'img', category, file_name+dtype))
 						if len(image.shape) != 3 and image.shape[3] != 3:
 							continue
 						image_resized = imresize(image, resize)
 						images.append(image_resized)
+						files.append(file_name)
 					except:
 						num_fail[i] += 1
 		labels = np.concatenate([[i] * (num_cate[i]-num_fail[i]) for i in range(len(categories))])
 		idx = np.arange(len(labels))
-		np.random.shuffle(idx)
-		return (np.array(images,dtype=np.float32)[idx], labels[idx], categories)
+		if shuffle:
+			np.random.shuffle(idx)
+		if filenames:
+			files = [files[i] for i in idx]
+			return (np.array(images,dtype=np.float32)[idx], labels[idx], categories, files)
+		else:
+			return (np.array(images,dtype=np.float32)[idx], labels[idx], categories)
 	else:
 		categories = [item for item in os.listdir(os.path.join(path,'img')) if item[0] != '.']
 		for i in range(len(categories)):
@@ -191,11 +199,11 @@ class model(object):
 	# You might want to re-define this function for your model
 	def predict(self, sess, image_path):
 		images = prepare_predict_data(image_path, self._channel_mean)
-		preds, = sess.run([self._pred], {self._input_placeholder:images, self._dropout_placeholder:1., self._is_training_placeholder:False})
-		return preds
+		preds, features = sess.run([self._pred, self._feature], {self._input_placeholder:images, self._dropout_placeholder:1., self._is_training_placeholder:False})
+		return preds, features
 
 	def predict_label(self, sess, image_path):
-		preds = self.predict(sess, image_path)
+		preds, = self.predict(sess, image_path)
 		return [self._class_names[i] for i in preds]
 
 	# You might want to re-define this function for your model
@@ -302,3 +310,18 @@ class model(object):
 		label = y[num_batches*self._config.batch_size:]
 		num_correct += np.sum(pred == label)
 		return 1 - num_correct * 1.0 / X.shape[0]
+
+	def extract_feature(self, sess, X, is_training = False, version = None):
+		num_batches = X.shape[0] // self._config.batch_size
+		features = list()
+		for i in range(num_batches):
+			feed_dict = {self._input_placeholder: X[i*self._config.batch_size:(i+1)*self._config.batch_size], self._dropout_placeholder:1.0, self._is_training_placeholder:is_training}
+			feature = sess.run(self._feature, feed_dict)
+			features.append(feature)
+		feed_dict = {self._input_placeholder: X[num_batches*self._config.batch_size:], self._dropout_placeholder:1.0, self._is_training_placeholder:is_training}
+		feature = sess.run(self._feature, feed_dict)
+		features.append(feature)
+		features = np.concatenate(features, axis = 0)
+		if version is not None:
+			np.savez('../model/vgg/feature_' + version + '.npz', feature = features)
+		return features

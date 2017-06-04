@@ -168,3 +168,17 @@ def insert_product(db, cursor, products):
 				json.dump(product,f)
 				f.write('\n')
 	db.commit()
+
+def retrieve_product_img(db, cursor, asins):
+	urls = []
+	for asin in asins:
+		cursor.execute("""
+			SELECT imUrl FROM Amazon_Clean
+			WHERE asin = '%s'
+			""" %(asin))
+		url = cursor.fetchall()[0][0]
+		urls.append(url)
+	return urls
+
+def retrieve_product_page(asins):
+	return ['https://www.amazon.com/dp/' + asin for asin in asins]

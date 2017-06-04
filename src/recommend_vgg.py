@@ -24,7 +24,22 @@ sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 vgg.load_parameters(sess,'../model/vgg/para_' + str(version) + '.npz')
 
-images, labels, categories, files = fetch_data(file = True, cate_file = 'categories_10000.txt', image_file = 'images_10000.txt', filenames = True, shuffle = False)
+categories = []
+files = []
+labels = []
+with open('../data/images.txt','r') as f:
+	n = int(f.readline().rstrip('\n'))
+	for _ in range(n):
+		category = f.readline().rstrip('\n')
+		categories.append(category)
+	while True:
+		temp = f.readline().rstrip('\n')
+		if temp == '':
+			break
+		temp_split = temp.split('\t')
+		files.append(temp_split[0])
+		labels.append(int(temp_split[1]))
+labels = np.array(labels)
 
 features = np.load('../model/vgg/feature_' + str(version) + '.npz')['feature']
 

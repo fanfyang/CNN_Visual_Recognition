@@ -40,9 +40,9 @@ with open('../images.txt','r') as f:
 		print(temp_split[0])
 		print(temp_split[1])
 		print(temp_split)
-		gdgd
 		file = temp_split[0]
 		label = temp_split[1]
+		gdgd
 		files.append(file)
 		labels.append(int(label))
 labels = np.array(labels)

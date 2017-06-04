@@ -31,15 +31,12 @@ with open('../images.txt','r') as f:
 	n = int(f.readline().rstrip('\n'))
 	for _ in range(n):
 		category = f.readline().rstrip('\n')
-		print(category)
 		categories.append(category)
 	while True:
-		temp = f.readline()
-		print(temp)
-		dgdg
+		temp = f.readline().rstrip('\n')
 		if temp == None:
 			break
-		file, label = temp.rstrip('\n').split('\t')
+		file, label = temp.split('\t')
 		files.append(file)
 		labels.append(int(label))
 labels = np.array(labels)

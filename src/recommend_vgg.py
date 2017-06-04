@@ -34,7 +34,7 @@ with open('../images.txt','r') as f:
 		categories.append(category)
 	while True:
 		temp = f.readline().rstrip('\n')
-		if temp == None:
+		if temp == '':
 			break
 		temp_split = temp.split('\t')
 		try:

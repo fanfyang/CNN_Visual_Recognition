@@ -226,6 +226,7 @@ class model(object):
 			y_batch = y[batch_idx]
 			feed_dict = {self._input_placeholder:X_batch, self._label_placeholder:y_batch, self._dropout_placeholder:self._config.dropout, self._is_training_placeholder:True}
 			loss, pred, _ = sess.run([self._loss, self._pred, self._train_op], feed_dict)
+			# print('loss: ' + str(loss))
 			total_loss.append(loss)
 			accu.append(1.*np.sum(pred==y_batch)/self._config.batch_size)
 			if (i+1)//batch_per_print*batch_per_print == i+1:

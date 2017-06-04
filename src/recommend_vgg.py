@@ -30,9 +30,13 @@ labels = []
 with open('../images.txt','r') as f:
 	n = int(f.readline().rstrip('\n'))
 	for _ in range(n):
-		categories.append(f.readline().rstrip('\n'))
+		category = f.readline().rstrip('\n')
+		print category
+		categories.append(category)
 	while True:
 		temp = f.readline()
+		print temp
+		dgdg
 		if temp == None:
 			break
 		file, label = temp.rstrip('\n').split('\t')

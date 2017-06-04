@@ -37,7 +37,11 @@ with open('../images.txt','r') as f:
 		if temp == None:
 			break
 		temp_split = temp.split('\t')
-		assert(len(temp_split)==2)
+		try:
+			assert(len(temp_split)==2)
+		except:
+			print(temp)
+			print(temp_split)
 		files.append(temp_split[0])
 		labels.append(int(temp_split[1]))
 labels = np.array(labels)

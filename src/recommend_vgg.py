@@ -27,7 +27,7 @@ vgg.load_parameters(sess,'../model/vgg/para_' + str(version) + '.npz')
 categories = []
 files = []
 labels = []
-with open('../images.txt','r') as f:
+with open('../data/images.txt','r') as f:
 	n = int(f.readline().rstrip('\n'))
 	for _ in range(n):
 		category = f.readline().rstrip('\n')

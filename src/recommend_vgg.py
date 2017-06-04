@@ -31,11 +31,11 @@ with open('../images.txt','r') as f:
 	n = int(f.readline().rstrip('\n'))
 	for _ in range(n):
 		category = f.readline().rstrip('\n')
-		print category
+		print(category)
 		categories.append(category)
 	while True:
 		temp = f.readline()
-		print temp
+		print(temp)
 		dgdg
 		if temp == None:
 			break

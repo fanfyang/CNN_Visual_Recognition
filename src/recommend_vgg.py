@@ -37,6 +37,7 @@ with open('../images.txt','r') as f:
 		if temp == None:
 			break
 		temp_split = temp.split('\t')
+		print(temp_split[0])
 		print(temp_split)
 		gdgd
 		file = temp_split[0]

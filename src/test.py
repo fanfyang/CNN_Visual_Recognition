@@ -50,5 +50,6 @@ else:
 	alex = model_alexNet(config)
 	sess = tf.Session()
 	sess.run(tf.global_variables_initializer())
-	alex.load_parameters(sess,'../model/alex/para_' + version + '.npz')
+	# alex.load_parameters(sess,'../model/alex/para_' + version + '.npz')
+	alex.load_parameters(sess,'../../../yang/model/Alex/para_' + version + '.npz')
 	print('test accu: %0.4f' % (1-alex.error(sess,X_test-alex._channel_mean,y_test)))

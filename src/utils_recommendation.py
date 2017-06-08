@@ -40,3 +40,8 @@ def recommend(sess, model, features, labels, categories, files, image_path, num 
 		temp = (categories[label], [sample_files[i] for i in idx])
 		recommendation.append(temp)
 	return recommendation
+
+def Jaccard_Similarity(x, y):
+	intersection = set(x).intersection(set(y))
+	union = set(x).union(set(y))
+	return 1.0 * len(intersection) // len(union)

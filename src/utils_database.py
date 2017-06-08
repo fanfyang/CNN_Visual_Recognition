@@ -180,5 +180,16 @@ def retrieve_product_img(db, cursor, asins):
 		urls.append(url)
 	return urls
 
+def retrieve_product_info(db, cursor, asins, cols, table = 'Amazon_Metadata'):
+	infos = []
+	for asin in asins:
+		cursor.execute("""
+			SELECT %s FROM %s
+			WHERE asin = '%s'
+			""" % (','.join(cols), table, asin))
+		info = cursor.fetchall()[0]
+		infos.append(info)
+	return infos
+
 def retrieve_product_page(asins):
 	return ['https://www.amazon.com/dp/' + asin for asin in asins]

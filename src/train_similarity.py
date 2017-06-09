@@ -95,8 +95,6 @@ def prepare_training_data(path_feature, path_similarity = '../data/similarity/')
 path_feature = '../model/vgg/feature_10.npz'
 
 x, y = prepare_training_data(path_feature)
-print(x.shape)
-print(y.shape)
 
 N = len(y)
 N_train = N // 10 * 7
@@ -113,4 +111,4 @@ config = Config_NN(**para)
 model_sim = model_nn(config)
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
-model_sim.train(sess, X_train, y_train, X_val, y_val, X_test, y_test, version = 'v')
+model_sim.train(sess, X_train, y_train, X_val, y_val, X_test, y_test, version = version)

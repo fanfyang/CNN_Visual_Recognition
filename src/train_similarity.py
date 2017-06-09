@@ -90,15 +90,15 @@ def prepare_training_data(path_feature, path_similarity = '../data/similarity/')
 		y.append(y_temp[idx])
 		if category in score_ignore:
 			skip += 1
-		print(skip)
-	return (np.array(x),np.array(y))
+	return (np.concatenate(x, axis = 0),np.concatenate(y, axis = 0))
 
-path_feature = '../model/vgg/feature_3.npz'
+path_feature = '../model/vgg/feature_10.npz'
 
 x, y = prepare_training_data(path_feature)
 print(x.shape)
 print(y.shape)
 
+N = len(y)
 N_train = N // 10 * 7
 N_val = N // 10 * 9
 X_train = x[:N_train]

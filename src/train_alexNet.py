@@ -24,7 +24,7 @@ config = Config(**para)
 alex = model_alexNet(config)
 
 
-def alex_train(model, sess, X_train, y_train, X_val, y_val, version):
+def alex_train(model, sess, X_train, y_train, X_val, y_val, X_test = None, y_test = None, version):
 	val_acc_current_best = 0.0
 	userName = args.user
 	for i in range(model._config.num_epoch):
@@ -32,7 +32,9 @@ def alex_train(model, sess, X_train, y_train, X_val, y_val, version):
 		model.run_epoch(sess, X_train, y_train)
 		train_acc = 1-model.error(sess, X_train, y_train)
 		val_acc = 1-model.error(sess, X_val, y_val)
-		print('train acc: %0.4f; val acc: %0.4f \n' % (train_acc, val_acc))
+		if X_test is not None:
+			test_acc = 1-self.error(sess, X_test, y_test)
+		print('train acc: %0.4f; val acc: %0.4f; test acc: %0.4f \n' % (train_acc, val_acc, test_acc))
 		if val_acc > val_acc_current_best:
 			val_acc_current_best = val_acc
 			model.save_parameters(sess, '../../../'+ userName + '/model/Alex/',version)
@@ -53,11 +55,13 @@ X_train = x[:N_train]
 X_val = x[N_train:N_val]
 y_train = y[:N_train]
 y_val = y[N_train:N_val]
+X_test = x[N_val:]
+y_test = y[N_val:]
 # print('===========', X_train.shape, X_val.shape, y_train.shape, y_val.shape, '===============')
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 alex.load_parameters_npy(sess,'../data/alex/bvlc_alexnet.npy',rand_init = ['fc8'])
-alex_train(alex,sess,X_train,y_train,X_val,y_val,version)
+alex_train(alex,sess,X_train,y_train,X_val,y_val,X_test,y_test,version)
 
 
 

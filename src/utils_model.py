@@ -48,7 +48,7 @@ def fetch_data(path = '../data', resize = (224,224,3), file = False, dtype = '.j
 						files.append(file_name)
 					except:
 						num_fail[i] += 1
-						print('fail:' + file_name + '; category:' + category + '\n')
+						print('fail:' + file_name + '; category:' + category + '; %d\n' %(j))
 		labels = np.concatenate([[i] * (num_cate[i]-num_fail[i]) for i in range(len(categories))])
 		idx = np.arange(len(labels))
 		if shuffle:

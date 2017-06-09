@@ -27,13 +27,15 @@ X_train = x[:N_train]
 y_train = y[:N_train]
 X_val = x[N_train:N_val]
 y_val = y[N_train:N_val]
+X_test = x[N_val:]
+y_test = y[N_val:]
 
 config = Config(**para)
 vgg = model_vgg16_20(config)
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 vgg.load_parameters(sess,'../data/vgg16/vgg16_weights.npz',rand_init = ['fc8_W', 'fc8_b'])
-vgg.train(sess,X_train - vgg._channel_mean,y_train,X_val - vgg._channel_mean,y_val,version, model = 'vgg')
+vgg.train(sess,X_train - vgg._channel_mean,y_train,X_val - vgg._channel_mean,y_val,version,X_test - vgg._channel_mean,y_test, model = 'vgg')
 
 # # Example 2
 # x,y,z = fetch_data_2(cate_file = 'categories.txt', image_file = 'images.txt')

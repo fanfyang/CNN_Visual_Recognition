@@ -87,6 +87,8 @@ def prepare_training_data(path_feature, path_similarity = '../data/similarity/')
 path_feature = '../model/vgg/feature_3.npz'
 
 x, y = prepare_training_data(path_feature)
+print(x.shape)
+print(y.shape)
 
 # N_train = N // 10 * 7
 # N_val = N // 10 * 9

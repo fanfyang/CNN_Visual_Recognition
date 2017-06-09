@@ -41,12 +41,14 @@ def fetch_data(path = '../data', resize = (224,224,3), file = False, dtype = '.j
 						file_name = f.readline().rstrip('\n')
 						image = ndimage.imread(os.path.join(path, 'img', category, file_name+dtype))
 						if len(image.shape) != 3 and image.shape[3] != 3:
+							print('dimension not agree:' + file_name + '; category:' + category + '\n')
 							continue
 						image_resized = imresize(image, resize)
 						images.append(image_resized)
 						files.append(file_name)
 					except:
 						num_fail[i] += 1
+						print('fail:' + file_name + '; category:' + category + '\n')
 		labels = np.concatenate([[i] * (num_cate[i]-num_fail[i]) for i in range(len(categories))])
 		idx = np.arange(len(labels))
 		if shuffle:

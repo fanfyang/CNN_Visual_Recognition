@@ -24,7 +24,7 @@ config = Config(**para)
 alex = model_alexNet(config)
 
 
-def alex_train(model, sess, X_train, y_train, X_val, y_val, X_test = None, y_test = None, version):
+def alex_train(model, sess, X_train, y_train, X_val, y_val, X_test, y_test, version):
 	val_acc_current_best = 0.0
 	userName = args.user
 	for i in range(model._config.num_epoch):

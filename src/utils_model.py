@@ -243,14 +243,16 @@ class model(object):
 		sys.stdout.flush()
 
 	# You might want to re-define this function for your model
-	def train(self, sess, X_train, y_train, X_val, y_val, version, model = 'vgg'):
+	def train(self, sess, X_train, y_train, X_val, y_val, X_test = None, y_test = None, version, model = 'vgg'):
 		val_acc_current_best = 0.0
 		for i in range(self._config.num_epoch):
 			print('Epoch %d / %d'%(i+1,self._config.num_epoch))
 			self.run_epoch(sess, X_train, y_train)
 			train_acc = 1-self.error(sess, X_train, y_train)
 			val_acc = 1-self.error(sess, X_val, y_val)
-			print('train acc: %0.4f; val acc: %0.4f \n' % (train_acc, val_acc))
+			if X_test is not None:
+				test_acc = 1-self.error(sess, X_test, y_test)
+			print('train acc: %0.4f; val acc: %0.4f; test acc: %0.4f \n' % (train_acc, val_acc, test_acc))
 			if val_acc > val_acc_current_best:
 				val_acc_current_best = val_acc
 				self.save_parameters(sess, '../model/' + model + '/',version)

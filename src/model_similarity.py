@@ -2,7 +2,7 @@ from utils_model import *
 import tensorflow as tf
 
 class Config_NN:
-	def __init__(self, lr = 0.001, decay_rate = 0.9, decay_steps = 700, l2 = 0.0005, input_dim = 4096, batch_size = 128, num_epoch = 20, dropout = 0.5):
+	def __init__(self, lr = 0.001, decay_rate = 0.9, decay_steps = 700, l2 = 0.0005, input_dim = 8192, batch_size = 128, num_epoch = 20, dropout = 0.5):
 		self.lr = lr
 		self.decay_rate = decay_rate
 		self.decay_steps = decay_steps

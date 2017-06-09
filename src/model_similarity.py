@@ -48,10 +48,10 @@ class model_nn(model):
 		for reg in tf.get_collection("Reg"):
 			self._loss += 0.5 * self._config.l2 * reg
 
-		self._global_step = tf.Variable(0, trainable = False)
-		lr = tf.train.exponential_decay(self._config.lr, decay_rate = self._config.decay_rate, global_step = self._global_step, decay_steps = self._config.decay_steps)
+		# self._global_step = tf.Variable(0, trainable = False)
+		# lr = tf.train.exponential_decay(self._config.lr, decay_rate = self._config.decay_rate, global_step = self._global_step, decay_steps = self._config.decay_steps)
 
-		optimizer = tf.train.AdamOptimizer(lr)
+		optimizer = tf.train.AdamOptimizer(self._config.lr)
 		self._train_op = optimizer.minimize(self._loss)
 
 	def run_epoch(self, sess, X, y, shuffle = True, batch_per_print = 2):

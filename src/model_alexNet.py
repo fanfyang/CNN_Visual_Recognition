@@ -117,16 +117,16 @@ class model_alexNet(model):
 		with tf.variable_scope('alexNet/fc6') as scope:
 			pool3_reshape = tf.reshape(pool3, [-1,9216])
 			# Wfc6 = tf.get_variable('W',[9216,4096], trainable=True, initializer=tf.contrib.layers.xavier_initializer())
-			Wfc6 = tf.get_variable('W',[9216,4096], trainable=True)
-			bfc6 = tf.get_variable('b',[4096], trainable=True)
+			Wfc6 = tf.get_variable('W',[9216,4096], trainable=False)
+			bfc6 = tf.get_variable('b',[4096], trainable=False)
 			fc6 = tf.nn.dropout(tf.nn.relu(tf.matmul(pool3_reshape, Wfc6) + bfc6), self._dropout_placeholder, name = 'fc6')
 			self._parameters['fc6_W'] = Wfc6
 			self._parameters['fc6_b'] = bfc6
 			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wfc6)))
 
 		with tf.variable_scope('alexNet/fc7') as scope:
-			Wfc7 = tf.get_variable('W',[4096,4096], trainable =True)
-			bfc7 = tf.get_variable('b',[4096], trainable =True)
+			Wfc7 = tf.get_variable('W',[4096,4096], trainable =False)
+			bfc7 = tf.get_variable('b',[4096], trainable =False)
 			fc7 = tf.nn.dropout(tf.nn.relu(tf.matmul(fc6, Wfc7) + bfc7), self._dropout_placeholder, name = 'fc7')
 			self._parameters['fc7_W'] = Wfc7
 			self._parameters['fc7_b'] = bfc7

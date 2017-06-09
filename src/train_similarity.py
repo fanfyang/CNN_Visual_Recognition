@@ -56,6 +56,8 @@ def prepare_training_data(path_feature, path_similarity = '../data/similarity/')
 	y = []
 	skip = 0
 	for i in range(len(categories)):
+		x_temp = []
+		y_temp = []
 		num_skip = 500 * i - skip
 		category = categories[i]
 		for k1 in range(499):
@@ -78,10 +80,17 @@ def prepare_training_data(path_feature, path_similarity = '../data/similarity/')
 						feature_k2 = features[num_skip + k2 - 1]
 				else:
 					feature_k2 = features[num_skip + k2]
-				x.append(np.concatenate((feature_k1, feature_k2)))
-				y.append(scores[category][k1,k2])
+				x_temp.append(np.concatenate((feature_k1, feature_k2)))
+				y_temp.append(scores[category][k1,k2])
+		x_temp = np.array(x_temp)
+		y_temp = np.array(y_temp)
+		y_temp_sorted = sorted([(y_temp[k],k) for k in range(len(y_temp))], key = lambda t:t[0])
+		idx = np.array([k for _, k in y_temp_sorted[:500]] + [k for _, k in y_temp_sorted[-500:]])
+		x.append(x_temp[idx])
+		y.append(y_temp[idx])
 		if category in score_ignore:
 			skip += 1
+		print(skip)
 	return (np.array(x),np.array(y))
 
 path_feature = '../model/vgg/feature_3.npz'
@@ -90,18 +99,18 @@ x, y = prepare_training_data(path_feature)
 print(x.shape)
 print(y.shape)
 
-# N_train = N // 10 * 7
-# N_val = N // 10 * 9
-# X_train = x[:N_train]
-# y_train = y[:N_train]
-# X_val = x[N_train:N_val]
-# y_val = y[N_train:N_val]
-# X_test = x[N_val:]
-# y_test = y[N_val:]
+N_train = N // 10 * 7
+N_val = N // 10 * 9
+X_train = x[:N_train]
+y_train = y[:N_train]
+X_val = x[N_train:N_val]
+y_val = y[N_train:N_val]
+X_test = x[N_val:]
+y_test = y[N_val:]
 
-# para = parse_argument_NN(args)
-# config = Config_NN(**para)
-# model_sim = model_nn(config)
-# sess = tf.Session()
-# sess.run(tf.global_variables_initializer())
-# model_sim.train(sess, X_train, y_train, X_val, y_val, X_test, y_test, version = 'v')
+para = parse_argument_NN(args)
+config = Config_NN(**para)
+model_sim = model_nn(config)
+sess = tf.Session()
+sess.run(tf.global_variables_initializer())
+model_sim.train(sess, X_train, y_train, X_val, y_val, X_test, y_test, version = 'v')

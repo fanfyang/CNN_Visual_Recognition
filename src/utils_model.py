@@ -232,6 +232,13 @@ class model(object):
 				num_eq = (i+1)//batch_per_eq
 				sys.stdout.write('\r '+str(i+1)+' / '+str(num_batches)+' [' + '='*num_eq + ' '*(len_eq - num_eq) + '] - %0.2fs - loss: %0.4f - acc: %0.4f  '%(float(time.time()-start),float(np.mean(total_loss)),float(np.mean(accu))))
 				sys.stdout.flush()
+		batch_idx = idx[num_batches*self._config.batch_size:]
+		X_batch = X[batch_idx]
+		y_batch = y[batch_idx]
+		feed_dict = {self._input_placeholder:X_batch, self._label_placeholder:y_batch, self._dropout_placeholder:self._config.dropout, self._is_training_placeholder:True}
+		loss, pred, _ = sess.run([self._loss, self._pred, self._train_op], feed_dict)
+		total_loss.append(loss)
+		accu.append(1.*np.sum(pred==y_batch)/self._config.batch_size)
 		sys.stdout.write('\r '+str(num_batches)+' / '+str(num_batches)+' [' + '='*len_eq + '] - %0.2fs - loss: %0.4f - acc: %0.4f  \n'%(float(time.time()-start),float(np.mean(total_loss)),float(np.mean(accu))))
 		sys.stdout.flush()
 

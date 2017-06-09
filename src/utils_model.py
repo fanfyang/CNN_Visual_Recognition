@@ -238,7 +238,7 @@ class model(object):
 		feed_dict = {self._input_placeholder:X_batch, self._label_placeholder:y_batch, self._dropout_placeholder:self._config.dropout, self._is_training_placeholder:True}
 		loss, pred, _ = sess.run([self._loss, self._pred, self._train_op], feed_dict)
 		total_loss.append(loss)
-		accu.append(1.*np.sum(pred==y_batch)/self._config.batch_size)
+		accu.append(1.*np.sum(pred==y_batch)/len(batch_idx))
 		sys.stdout.write('\r '+str(num_batches)+' / '+str(num_batches)+' [' + '='*len_eq + '] - %0.2fs - loss: %0.4f - acc: %0.4f  \n'%(float(time.time()-start),float(np.mean(total_loss)),float(np.mean(accu))))
 		sys.stdout.flush()
 

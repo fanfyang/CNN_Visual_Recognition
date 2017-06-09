@@ -18,7 +18,7 @@ version = args.v
 para = parse_argument(args)
 
 # Example 1
-# x,y,class_names = fetch_data(file = True, cate_file = 'categories.txt', image_file = 'images.txt')
+# x,y,class_names = fetch_data(file = True, cate_file = 'categories_small.txt', image_file = 'images_small.txt')
 x,y,class_names = fetch_data(file = True, cate_file = 'categories_10000.txt', image_file = 'images_10000.txt')
 N = len(y)
 N_train = N // 10 * 7

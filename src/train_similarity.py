@@ -96,6 +96,11 @@ path_feature = '../model/vgg/feature_10.npz'
 
 x, y = prepare_training_data(path_feature)
 
+idx = np.arange(x.shape[0])
+np.random.shuffle(idx)
+x = x[idx]
+y = y[idx]
+
 N = len(y)
 N_train = N // 10 * 7
 N_val = N // 10 * 9

@@ -8,6 +8,7 @@ parser.add_argument('--v', help = 'version')
 parser.add_argument('--m', help = 'model')
 parser.add_argument('--nc', help = 'number of classes')
 parser.add_argument('--bs', help = 'batch size')
+parser.add_argument('--bn', help = 'batch normalization')
 args = parser.parse_args()
 
 version = args.v
@@ -17,6 +18,7 @@ batch_size = int(args.bs)
 
 if model == 'vgg': 
 	x,y,z = fetch_data(file = True, cate_file = 'categories_10000.txt', image_file = 'images_10000.txt')
+	# x,y,z = fetch_data(file = True, cate_file = 'categories_small.txt', image_file = 'images_small.txt')
 	N = len(y)
 	N_train = N // 10 * 7
 	N_val = N // 10 * 9

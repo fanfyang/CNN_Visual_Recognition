@@ -33,7 +33,7 @@ def alex_train(model, sess, X_train, y_train, X_val, y_val, X_test, y_test, vers
 		train_acc = 1-model.error(sess, X_train, y_train)
 		val_acc = 1-model.error(sess, X_val, y_val)
 		if X_test is not None:
-			test_acc = 1-self.error(sess, X_test, y_test)
+			test_acc = 1-model.error(sess, X_test, y_test)
 		print('train acc: %0.4f; val acc: %0.4f; test acc: %0.4f \n' % (train_acc, val_acc, test_acc))
 		if val_acc > val_acc_current_best:
 			val_acc_current_best = val_acc

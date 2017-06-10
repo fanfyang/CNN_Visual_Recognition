@@ -174,8 +174,8 @@ class model_vgg16_20_dense(model):
 			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wfc7)))
 
 		with tf.variable_scope('vgg16_20/fc8') as scope:
-			Wfc8 = tf.get_variable('W',[4096,self._config.num_classes], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
-			bfc8 = tf.get_variable('b',[self._config.num_classes], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
+			Wfc8 = tf.get_variable('W',[4096,5*self._config.num_classes], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
+			bfc8 = tf.get_variable('b',[5*self._config.num_classes], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
 			fc8 = tf.nn.relu(tf.matmul(fc7, Wfc8) + bfc8, name = 'fc8')
 			if self._config.use_batch_norm:
 				fc8 = tf.layers.batch_normalization(inputs = fc8, scale = True, center = True, training = self._is_training_placeholder, trainable = True)

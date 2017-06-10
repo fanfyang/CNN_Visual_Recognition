@@ -16,9 +16,10 @@ parser.add_argument('--user', help= 'user name', nargs='?', default='FYang')
 args = parser.parse_args()
 
 # version = args.v
+version = 'lr_' + str(args.lr) + '_ne_' + str(args.ne) + '_d_' + str(args.d) + '_l2_' + str(args.l2)
 
 para = parse_argument(args)
-version = 'lr_' + str(args.lr) + '_ne_' + str(args.ne) + '_d_' + str(args.d) + '_l2_' + str(args.l2)
+
 config = Config(**para)
 # config = Config(num_classes = 20, batch_size = 70, lr = 0.001, l2 = 0.0)
 alex = model_alexNet(config)

@@ -38,7 +38,7 @@ class model_nn(model):
 		with tf.variable_scope('nn/fc3') as scope:
 			Wfc3 = tf.get_variable('W',[self._config.input_dim,1], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
 			bfc3 = tf.get_variable('b',[1], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
-			fc3 = tf.matmul(self._input_placeholder, Wfc3) + bfc3
+			fc3 = tf.nn.relu(tf.matmul(self._input_placeholder, Wfc3) + bfc3)
 			self._parameters['fc3_W'] = Wfc3
 			self._parameters['fc3_b'] = bfc3
 			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wfc3)))

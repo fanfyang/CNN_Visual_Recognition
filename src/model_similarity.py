@@ -38,10 +38,18 @@ class model_nn(model):
 		with tf.variable_scope('nn/fc3') as scope:
 			Wfc3 = tf.get_variable('W',[self._config.input_dim,1], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
 			bfc3 = tf.get_variable('b',[1], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
-			self._score = tf.matmul(self._input_placeholder, Wfc3) + bfc3
+			fc3 = tf.matmul(self._input_placeholder, Wfc3) + bfc3
 			self._parameters['fc3_W'] = Wfc3
 			self._parameters['fc3_b'] = bfc3
 			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wfc3)))
+
+		with tf.variable_scope('nn/fc4') as scope:
+			Wfc4 = tf.get_variable('W',[1,1], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
+			bfc4 = tf.get_variable('b',[1], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
+			self._score = tf.matmul(fc3, Wfc4) + bfc4
+			self._parameters['fc4_W'] = Wfc4
+			self._parameters['fc4_b'] = bfc4
+			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wfc4)))
 
 		self._pred = tf.squeeze(self._score)
 		self._loss = tf.reduce_mean(tf.square(self._pred - self._output_placeholder))

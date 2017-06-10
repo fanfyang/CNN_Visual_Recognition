@@ -16,7 +16,7 @@ parser.add_argument('--user', help= 'user name', nargs='?', default='FYang')
 args = parser.parse_args()
 
 # version = args.v
-version = 'lr_' + args.lr + '_ne_' + args.ne + '_d_' + args.d + '_l2_' + args.l2
+version = 'lr_' + str(args.lr) + '_ne_' + str(args.ne) + '_d_' + str(args.d) + '_l2_' + str(args.l2)
 
 para = parse_argument(args)
 

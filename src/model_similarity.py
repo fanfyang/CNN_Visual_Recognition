@@ -17,13 +17,14 @@ class model_nn(model):
 		self._config = config
 		self._input_placeholder = tf.placeholder(dtype = tf.float32, shape = (None, self._config.input_dim))
 		self._output_placeholder = tf.placeholder(dtype = tf.float32, shape = (None,))
+		self._dropout_placeholder = tf.placeholder(dtype = tf.float32)
 		self._parameters = dict()
 
 		with tf.variable_scope('nn/fc1') as scope:
 			Wfc1 = tf.get_variable('W',[self._config.input_dim,512], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
 			bfc1 = tf.get_variable('b',[512], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
 			temp1 = tf.matmul(self._input_placeholder, Wfc1) + bfc1
-			fc1 = tf.maximum(0.01*temp1, temp1)
+			fc1 = tf.nn.dropout(tf.maximum(0.01*temp1, temp1), self._dropout_placeholder)
 			self._parameters['fc1_W'] = Wfc1
 			self._parameters['fc1_b'] = bfc1
 			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wfc1)))
@@ -40,7 +41,7 @@ class model_nn(model):
 			Wfc3 = tf.get_variable('W',[512,1], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
 			bfc3 = tf.get_variable('b',[1], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
 			temp3 = tf.matmul(fc1, Wfc3) + bfc3
-			fc3 = tf.maximum(0.01*temp3, temp3)
+			fc3 = tf.nn.dropout(tf.maximum(0.01*temp3, temp3), self._dropout_placeholder)
 			self._parameters['fc3_W'] = Wfc3
 			self._parameters['fc3_b'] = bfc3
 			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wfc3)))
@@ -80,7 +81,7 @@ class model_nn(model):
 			batch_idx = idx[i*self._config.batch_size:(i+1)*self._config.batch_size]
 			X_batch = X[batch_idx]
 			y_batch = y[batch_idx]
-			feed_dict = {self._input_placeholder:X_batch, self._output_placeholder:y_batch}
+			feed_dict = {self._input_placeholder:X_batch, self._output_placeholder:y_batch, self._dropout_placeholder:self._config.dropout}
 			loss, _ = sess.run([self._loss, self._train_op], feed_dict)
 			total_loss.append(loss)
 			if (i+1)//batch_per_print*batch_per_print == i+1:
@@ -90,7 +91,7 @@ class model_nn(model):
 		batch_idx = idx[num_batches*self._config.batch_size:]
 		X_batch = X[batch_idx]
 		y_batch = y[batch_idx]
-		feed_dict = {self._input_placeholder:X_batch, self._output_placeholder:y_batch}
+		feed_dict = {self._input_placeholder:X_batch, self._output_placeholder:y_batch, self._dropout_placeholder:self._config.dropout}
 		loss, _ = sess.run([self._loss, self._train_op], feed_dict)
 		total_loss.append(loss)
 		sys.stdout.write('\r '+str(num_batches)+' / '+str(num_batches)+' [' + '='*len_eq + '] - %0.2fs - loss: %0.4f  \n'%(float(time.time()-start),float(np.mean(total_loss))))
@@ -113,11 +114,11 @@ class model_nn(model):
 		num_batches = X.shape[0] // self._config.batch_size
 		e = 0.0
 		for i in range(num_batches):
-			feed_dict = {self._input_placeholder: X[i*self._config.batch_size:(i+1)*self._config.batch_size]}
+			feed_dict = {self._input_placeholder: X[i*self._config.batch_size:(i+1)*self._config.batch_size], self._dropout_placeholder:1.0}
 			pred = sess.run(self._pred, feed_dict)
 			similarity = y[i*self._config.batch_size:(i+1)*self._config.batch_size]
 			e += np.sum((pred - similarity) ** 2)
-		feed_dict = {self._input_placeholder: X[num_batches*self._config.batch_size:]}
+		feed_dict = {self._input_placeholder: X[num_batches*self._config.batch_size:], self._dropout_placeholder:1.0}
 		pred = sess.run(self._pred, feed_dict)
 		similarity = y[num_batches*self._config.batch_size:]
 		e += np.sum((pred - similarity) ** 2)

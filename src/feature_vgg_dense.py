@@ -15,15 +15,16 @@ parser.add_argument('--user', help= 'user name', nargs='?', default='FYang')
 args = parser.parse_args()
 
 version = 'lr_' + str(args.lr) + '_ne_' + str(args.ne) + '_d_' + str(args.d) + '_l2_' + str(args.l2)
-
+userName = args.user
 
 para = parse_argument(args)
 
 config = Config(**para)
-vgg = model_vgg16_20(config)
+vgg_dense = model_vgg16_20_dense(config)
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
-vgg.load_parameters(sess,'../model/vgg/para_' + str(version) + '.npz')
+param_name = '../../../'+ userName + '/model/dense/para_' + version + '.npz'
+vgg_dense.load_parameters(sess,param_name)
 
 images, labels, categories, files = fetch_data(file = True, cate_file = 'categories_10000.txt', image_file = 'images_10000.txt', filenames = True, shuffle = False)
 # images, labels, categories = fetch_data(file = True, cate_file = 'categories_10000.txt', image_file = 'images_10000.txt', filenames = False, shuffle = True)
@@ -43,7 +44,24 @@ x = images - vgg._channel_mean
 # print(vgg.error(sess, X_val, y_val))
 # print(vgg.error(sess, X_test, y_test))
 
-vgg.extract_feature(sess, x, is_training = False, version = version)
+def extract_feature(model, sess, X, userName, is_training = False, version = None):
+	num_batches = X.shape[0] // model._config.batch_size
+	features = list()
+	for i in range(num_batches):
+		feed_dict = {model._input_placeholder: X[i*model._config.batch_size:(i+1)*model._config.batch_size], model._dropout_placeholder:1.0, model._is_training_placeholder:is_training}
+		feature = sess.run(model._feature, feed_dict)
+		features.append(feature)
+	feed_dict = {model._input_placeholder: X[num_batches*model._config.batch_size:], model._dropout_placeholder:1.0, model._is_training_placeholder:is_training}
+	feature = sess.run(model._feature, feed_dict)
+	features.append(feature)
+	features = np.concatenate(features, axis = 0)
+	if version is not None:
+		np.savez('../../../'+ userName + '/model/dense/feature_' + version + '.npz', feature = features)
+	return features
+
+
+
+extract_feature(vgg_dense, sess, x, userName, is_training = False, version = version)
 print(files[0])
 print(categories[labels[0]])
 print(files[-1])

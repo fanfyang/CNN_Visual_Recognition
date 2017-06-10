@@ -103,6 +103,8 @@ if args.m == 'nn':
 elif args.m == 'cnn':
 	x, y = prepare_training_data(path_feature, axis = 1)
 
+np.savez('../y.npz', y = y)
+
 idx = np.arange(x.shape[0])
 np.random.shuffle(idx)
 x = x[idx]

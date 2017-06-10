@@ -10,5 +10,5 @@ ds = np.arange(0.2,1,1)
 l2s = np.log(np.logspace(0.005, 0.05, 1))
 params = [(lr,ne,d,l2) for lr in lrs for ne in nes for d in ds for l2 in l2s]
 for param in params:
-	command = 'python train_alexNet.py --lr ' + param[0] + '--ne' + param[1] + '--d' + param[2] + '--l2' + param[3]
+	command = 'python train_alexNet.py --lr ' + str(param[0]) + '--ne' + str(param[1]) + '--d' + str(param[2]) + '--l2' + str(param[3])
 	os.system(command)

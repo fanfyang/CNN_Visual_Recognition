@@ -95,7 +95,10 @@ def prepare_training_data(path_feature, path_similarity = '../data/similarity/',
 
 path_feature = '../model/vgg/feature_10.npz'
 
-x, y = prepare_training_data(path_feature, axis = 1)
+if args.m == 'nn':
+	x, y = prepare_training_data(path_feature, axis = 0)
+elif args.m == 'cnn':
+	x, y = prepare_training_data(path_feature, axis = 1)
 
 idx = np.arange(x.shape[0])
 np.random.shuffle(idx)
@@ -113,10 +116,12 @@ X_test = x[N_val:]
 y_test = y[N_val:]
 
 para = parse_argument_NN(args)
-# config = Config_NN(**para)
-# model_sim = model_nn(config)
-config = Config_CNN(**para)
-model_sim = model_cnn(config)
+if args.m == 'nn':
+	config = Config_NN(**para)
+	model_sim = model_nn(config)
+elif args.m == 'cnn':
+	config = Config_CNN(**para)
+	model_sim = model_cnn(config)
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 model_sim.train(sess, X_train, y_train, X_val, y_val, X_test, y_test, version = version)

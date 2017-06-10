@@ -144,9 +144,9 @@ class model_cnn(model):
 		self._parameters = dict()
 
 		with tf.variable_scope('cnn/conv1') as scope:
-			Wconv1 = tf.get_variable('W', [1,1,2,1], trainable = True)
+			Wconv1 = tf.get_variable('W', [1,2,1], trainable = True)
 			bconv1 = tf.get_variable('b', [1], trainable = True)
-			conv1 = tf.nn.conv2d(self._input_placeholder, Wconv1, [1,1,1,1], padding = 'SAME') + bconv1
+			conv1 = tf.nn.conv1d(self._input_placeholder, Wconv1, 1, padding = 'SAME') + bconv1
 			relu1 = tf.maximum(0.01 * conv1, conv1)
 			self._parameters['conv1_W'] = Wconv1
 			self._parameters['conv1_b'] = bconv1

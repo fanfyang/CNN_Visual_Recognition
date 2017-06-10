@@ -9,6 +9,7 @@ parser.add_argument('--bs', help = 'batch size')
 parser.add_argument('--ne', help = 'number of epoches')
 parser.add_argument('--d', help = 'droupout')
 parser.add_argument('--v', help = 'version')
+parser.add_argument('--m', help = 'model')
 args = parser.parse_args()
 
 version = args.v

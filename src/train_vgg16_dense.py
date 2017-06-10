@@ -83,7 +83,7 @@ y_test = y[N_val:]
 # print('===========', X_train.shape, X_val.shape, y_train.shape, y_val.shape, '===============')
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
-vgg_dense.load_parameters_npy(sess,'../data/vgg16/vgg16_weights.npz',rand_init = ['fc8_W', 'fc8_b'])
+vgg_dense.load_parameters(sess,'../data/vgg16/vgg16_weights.npz',rand_init = ['fc8_W', 'fc8_b'])
 dense_train(vgg_dense,sess,X_train,y_train,X_val,y_val,X_test,y_test,version, args)
 
 

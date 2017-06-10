@@ -1,19 +1,21 @@
 from model_vgg16_dense import *
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--lr', help = 'learning rate')
+parser.add_argument('--lr', help = 'learning rate', nargs='?', default=0.0005)
 parser.add_argument('--dr', help = 'decay_rate')
 parser.add_argument('--ds', help = 'decay steps')
-parser.add_argument('--l2', help = 'regularization')
-parser.add_argument('--bs', help = 'batch size')
-parser.add_argument('--ne', help = 'number of epoches')
-parser.add_argument('--d', help = 'droupout')
-parser.add_argument('--nc', help = 'number of classes')
-parser.add_argument('--bn', help = 'batch normalization')
-parser.add_argument('--v', help = 'version')
+parser.add_argument('--l2', help = 'regularization', nargs='?', default=0.01)
+parser.add_argument('--bs', help = 'batch size', nargs='?', default=16)
+parser.add_argument('--ne', help = 'number of epoches', nargs='?', default=2)
+parser.add_argument('--d', help = 'droupout', nargs='?', default=0.5)
+parser.add_argument('--nc', help = 'number of classes', nargs='?', default=20)
+parser.add_argument('--bn', help = 'batch normalization', nargs='?', default=False)
+parser.add_argument('--v', help = 'version', nargs='?', default=str(time()))
+parser.add_argument('--user', help= 'user name', nargs='?', default='FYang')
 args = parser.parse_args()
 
-version = args.v
+version = 'lr_' + str(args.lr) + '_ne_' + str(args.ne) + '_d_' + str(args.d) + '_l2_' + str(args.l2)
+
 
 para = parse_argument(args)
 

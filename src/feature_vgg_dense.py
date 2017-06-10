@@ -29,7 +29,7 @@ vgg_dense.load_parameters(sess,param_name)
 
 images, labels, categories, files = fetch_data(file = True, cate_file = 'categories_10000.txt', image_file = 'images_10000.txt', filenames = True, shuffle = False)
 # images, labels, categories = fetch_data(file = True, cate_file = 'categories_10000.txt', image_file = 'images_10000.txt', filenames = False, shuffle = True)
-x = images - vgg._channel_mean
+x = images - vgg_dense._channel_mean
 
 # N = len(labels)
 # N_train = N // 10 * 7

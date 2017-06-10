@@ -1,4 +1,5 @@
 from model_vgg16_dense import *
+from time import time
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--lr', help = 'learning rate', nargs='?', default=0.0005)

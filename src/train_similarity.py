@@ -24,7 +24,7 @@ def parse_argument_NN(args):
 	para['dropout'] = float(args.d) if args.d != None else 0.5
 	return para
 
-def prepare_training_data(path_feature, path_similarity = '../data/similarity/'):
+def prepare_training_data(path_feature, path_similarity = '../data/similarity/', axis = 0):
 	categories = []
 	files = []
 	labels = []
@@ -80,7 +80,7 @@ def prepare_training_data(path_feature, path_similarity = '../data/similarity/')
 						feature_k2 = features[num_skip + k2 - 1]
 				else:
 					feature_k2 = features[num_skip + k2]
-				x_temp.append(np.concatenate((feature_k1, feature_k2)))
+				x_temp.append(np.concatenate((feature_k1, feature_k2), axis = axis))
 				y_temp.append(scores[category][k1,k2])
 		x_temp = np.array(x_temp)
 		y_temp = np.array(y_temp)
@@ -112,8 +112,10 @@ X_test = x[N_val:]
 y_test = y[N_val:]
 
 para = parse_argument_NN(args)
-config = Config_NN(**para)
-model_sim = model_nn(config)
+# config = Config_NN(**para)
+# model_sim = model_nn(config)
+config = Config_CNN(**para)
+model_sim = model_cnn(config)
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 model_sim.train(sess, X_train, y_train, X_val, y_val, X_test, y_test, version = version)

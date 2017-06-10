@@ -19,26 +19,26 @@ class model_nn(model):
 		self._output_placeholder = tf.placeholder(dtype = tf.float32, shape = (None,))
 		self._parameters = dict()
 
-		# with tf.variable_scope('nn/fc1') as scope:
-		# 	Wfc1 = tf.get_variable('W',[self._config.input_dim,512], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
-		# 	bfc1 = tf.get_variable('b',[512], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
-		# 	fc1 = tf.nn.relu(tf.matmul(self._input_placeholder, Wfc1) + bfc1, name = 'fc1')
-		# 	self._parameters['fc1_W'] = Wfc1
-		# 	self._parameters['fc1_b'] = bfc1
-		# 	tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wfc1)))
+		with tf.variable_scope('nn/fc1') as scope:
+			Wfc1 = tf.get_variable('W',[self._config.input_dim,512], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
+			bfc1 = tf.get_variable('b',[512], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
+			fc1 = tf.nn.relu(tf.matmul(self._input_placeholder, Wfc1) + bfc1, name = 'fc1')
+			self._parameters['fc1_W'] = Wfc1
+			self._parameters['fc1_b'] = bfc1
+			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wfc1)))
 
-		# with tf.variable_scope('nn/fc2') as scope:
-		# 	Wfc2 = tf.get_variable('W',[512,32], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
-		# 	bfc2 = tf.get_variable('b',[32], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
-		# 	fc2 = tf.nn.relu(tf.matmul(fc1, Wfc2) + bfc2, name = 'fc2')
-		# 	self._parameters['fc2_W'] = Wfc2
-		# 	self._parameters['fc2_b'] = bfc2
-		# 	tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wfc2)))
+		with tf.variable_scope('nn/fc2') as scope:
+			Wfc2 = tf.get_variable('W',[512,32], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
+			bfc2 = tf.get_variable('b',[32], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
+			fc2 = tf.nn.relu(tf.matmul(fc1, Wfc2) + bfc2, name = 'fc2')
+			self._parameters['fc2_W'] = Wfc2
+			self._parameters['fc2_b'] = bfc2
+			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wfc2)))
 
 		with tf.variable_scope('nn/fc3') as scope:
-			Wfc3 = tf.get_variable('W',[self._config.input_dim,1], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
+			Wfc3 = tf.get_variable('W',[32,1], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
 			bfc3 = tf.get_variable('b',[1], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
-			self._score = tf.matmul(self._input_placeholder, Wfc3) + bfc3
+			self._score = tf.matmul(fc2, Wfc3) + bfc3
 			self._parameters['fc3_W'] = Wfc3
 			self._parameters['fc3_b'] = bfc3
 			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wfc3)))

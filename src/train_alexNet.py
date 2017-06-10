@@ -8,14 +8,15 @@ parser.add_argument('--ds', help = 'decay steps')
 parser.add_argument('--l2', help = 'regularization', nargs='?', default=0.01)
 parser.add_argument('--bs', help = 'batch size', nargs='?', default=16)
 parser.add_argument('--ne', help = 'number of epoches', nargs='?', default=2)
-parser.add_argument('--d', help = 'droupout', nargs='?', default=1)
+parser.add_argument('--d', help = 'droupout', nargs='?', default=0.5)
 parser.add_argument('--nc', help = 'number of classes', nargs='?', default=20)
 parser.add_argument('--bn', help = 'batch normalization', nargs='?', default=False)
 parser.add_argument('--v', help = 'version', nargs='?', default=str(time()))
 parser.add_argument('--user', help= 'user name', nargs='?', default='FYang')
 args = parser.parse_args()
 
-version = args.v
+# version = args.v
+version = 'lr_' + args.lr + '_ne_' + args.ne + '_d_' + args.d + '_l2_' + args.l2
 
 para = parse_argument(args)
 
@@ -27,14 +28,16 @@ alex = model_alexNet(config)
 def alex_train(model, sess, X_train, y_train, X_val, y_val, X_test, y_test, version):
 	val_acc_current_best = 0.0
 	userName = args.user
+	resultName =  '../../../'+ userName + '/result/Alex/',version
+	resultWriter = open(resultName, 'w')
 	for i in range(model._config.num_epoch):
-		print('Epoch %d / %d'%(i+1,model._config.num_epoch))
+		resultWriter.write('Epoch %d / %d'%(i+1,model._config.num_epoch))
 		model.run_epoch(sess, X_train, y_train)
 		train_acc = 1-model.error(sess, X_train, y_train)
 		val_acc = 1-model.error(sess, X_val, y_val)
 		if X_test is not None:
 			test_acc = 1-model.error(sess, X_test, y_test)
-		print('train acc: %0.4f; val acc: %0.4f; test acc: %0.4f \n' % (train_acc, val_acc, test_acc))
+		resultWriter.write('train acc: %0.4f; val acc: %0.4f; test acc: %0.4f \n' % (train_acc, val_acc, test_acc))
 		if val_acc > val_acc_current_best:
 			val_acc_current_best = val_acc
 			model.save_parameters(sess, '../../../'+ userName + '/model/Alex/',version)

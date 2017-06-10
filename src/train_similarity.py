@@ -81,7 +81,10 @@ def prepare_training_data(path_feature, path_similarity = '../data/similarity/',
 						feature_k2 = features[num_skip + k2 - 1]
 				else:
 					feature_k2 = features[num_skip + k2]
-				x_temp.append(np.concatenate((feature_k1[np.newaxis,:], feature_k2[np.newaxis,:]), axis = axis))
+				if axis == 1:
+					x_temp.append(np.concatenate((feature_k1[:,np.newaxis], feature_k2[:,np.newaxis]), axis = 1))
+				else:
+					x_temp.append(np.concatenate((feature_k1, feature_k2)))
 				y_temp.append(scores[category][k1,k2])
 		x_temp = np.array(x_temp)
 		y_temp = np.array(y_temp)

@@ -28,7 +28,7 @@ alex = model_alexNet(config)
 def alex_train(model, sess, X_train, y_train, X_val, y_val, X_test, y_test, version):
 	val_acc_current_best = 0.0
 	userName = args.user
-	resultName =  '../../../'+ userName + '/result/Alex/' + version
+	resultName =  '../../../'+ userName + '/model/Alex/' + version + '.res'
 	resultWriter = open(resultName, 'w')
 	for i in range(model._config.num_epoch):
 		resultWriter.write('Epoch %d / %d'%(i+1,model._config.num_epoch))

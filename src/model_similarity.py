@@ -39,7 +39,8 @@ class model_nn(model):
 		with tf.variable_scope('nn/fc3') as scope:
 			Wfc3 = tf.get_variable('W',[512,1], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
 			bfc3 = tf.get_variable('b',[1], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
-			fc3 = tf.sigmoid(tf.matmul(fc1, Wfc3) + bfc3)
+			temp3 = tf.matmul(fc1, Wfc3) + bfc3
+			fc3 = tf.maximum(0.01*temp3, temp3)
 			self._parameters['fc3_W'] = Wfc3
 			self._parameters['fc3_b'] = bfc3
 			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wfc3)))
@@ -57,10 +58,10 @@ class model_nn(model):
 		for reg in tf.get_collection("Reg"):
 			self._loss += 0.5 * self._config.l2 * reg
 
-		# self._global_step = tf.Variable(0, trainable = False)
-		# lr = tf.train.exponential_decay(self._config.lr, decay_rate = self._config.decay_rate, global_step = self._global_step, decay_steps = self._config.decay_steps)
+		self._global_step = tf.Variable(0, trainable = False)
+		lr = tf.train.exponential_decay(self._config.lr, decay_rate = self._config.decay_rate, global_step = self._global_step, decay_steps = self._config.decay_steps)
 
-		optimizer = tf.train.AdamOptimizer(self._config.lr)
+		optimizer = tf.train.AdamOptimizer(lr)
 		self._train_op = optimizer.minimize(self._loss)
 
 	def run_epoch(self, sess, X, y, shuffle = True, batch_per_print = 2):

@@ -22,7 +22,7 @@ class model_nn(model):
 		with tf.variable_scope('nn/fc1') as scope:
 			Wfc1 = tf.get_variable('W',[self._config.input_dim,512], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
 			bfc1 = tf.get_variable('b',[512], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
-			temp1 = tf.matmul(self._input_placeholder, Wfc1) + bfc1, name = 'fc1'
+			temp1 = tf.matmul(self._input_placeholder, Wfc1) + bfc1
 			fc1 = tf.maximum(0.01*temp1, temp1)
 			self._parameters['fc1_W'] = Wfc1
 			self._parameters['fc1_b'] = bfc1

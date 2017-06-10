@@ -25,22 +25,40 @@ config = Config(**para)
 alex = model_alexNet(config)
 
 
-def alex_train(model, sess, X_train, y_train, X_val, y_val, X_test, y_test, version):
+def alex_train(model, sess, X_train, y_train, X_val, y_val, X_test, y_test, version, args):
 	val_acc_current_best = 0.0
 	userName = args.user
 	resultName =  '../../../'+ userName + '/model/Alex/' + version + '.res'
 	resultWriter = open(resultName, 'w')
+	bestVal = 0
 	for i in range(model._config.num_epoch):
 		resultWriter.write('Epoch %d / %d'%(i+1,model._config.num_epoch))
 		model.run_epoch(sess, X_train, y_train)
 		train_acc = 1-model.error(sess, X_train, y_train)
 		val_acc = 1-model.error(sess, X_val, y_val)
+		if val_acc > bestVal:
+			bestVal = val_acc
+			bestResult = version + ': train acc: %0.4f; val acc: %0.4f; test acc: %0.4f \n' % (train_acc, val_acc, test_acc)
 		if X_test is not None:
 			test_acc = 1-model.error(sess, X_test, y_test)
 		resultWriter.write('train acc: %0.4f; val acc: %0.4f; test acc: %0.4f \n' % (train_acc, val_acc, test_acc))
 		if val_acc > val_acc_current_best:
 			val_acc_current_best = val_acc
 			model.save_parameters(sess, '../../../'+ userName + '/model/Alex/',version)
+	resultWriter.close()
+	lrW = open('../../../'+ userName + '/model/Alex/lr_' + args.lr + '.comp', 'a')
+	lrW.write(bestResult)
+	lrW.close()
+	neW = open('../../../'+ userName + '/model/Alex/ne_' + args.ne + '.comp', 'a')
+	neW.write(bestResult)
+	neW.close()
+	dW = open('../../../'+ userName + '/model/Alex/d_' + args.d + '.comp', 'a')
+	dW.write(bestResult)
+	dW.close()
+	l2W = open('../../../'+ userName + '/model/Alex/l2_' + args.l2 + '.comp', 'a')
+	l2W.write(bestResult)
+	l2W.close()
+
 
 
 # Example 1
@@ -64,7 +82,7 @@ y_test = y[N_val:]
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 alex.load_parameters_npy(sess,'../data/alex/bvlc_alexnet.npy',rand_init = ['fc8'])
-alex_train(alex,sess,X_train,y_train,X_val,y_val,X_test,y_test,version)
+alex_train(alex,sess,X_train,y_train,X_val,y_val,X_test,y_test,version, args)
 
 
 

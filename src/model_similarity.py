@@ -147,7 +147,7 @@ class model_cnn(model):
 			Wconv1 = tf.get_variable('W', [1,2,1], trainable = True)
 			bconv1 = tf.get_variable('b', [1], trainable = True)
 			conv1 = tf.nn.conv1d(self._input_placeholder, Wconv1, 1, padding = 'SAME') + bconv1
-			relu1 = tf.maximum(0.01 * conv1, conv1)
+			relu1 = tf.reshape(tf.maximum(0.01 * conv1, conv1), [-1,self._config.input_dim])
 			self._parameters['conv1_W'] = Wconv1
 			self._parameters['conv1_b'] = bconv1
 			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv1)))

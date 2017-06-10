@@ -51,7 +51,7 @@ class model_nn(model):
 			self._parameters['fc4_b'] = bfc4
 			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wfc4)))
 
-		self._pred = tf.squeeze(self._score)
+		self._pred = tf.squeeze(tf.sigmoid(self._score))
 		self._loss = tf.reduce_mean(tf.square(self._pred - self._output_placeholder))
 		for reg in tf.get_collection("Reg"):
 			self._loss += 0.5 * self._config.l2 * reg

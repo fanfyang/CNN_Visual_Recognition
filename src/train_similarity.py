@@ -94,7 +94,7 @@ def prepare_training_data(path_feature, path_similarity = '../data/similarity/',
 
 path_feature = '../model/vgg/feature_10.npz'
 
-x, y = prepare_training_data(path_feature)
+x, y = prepare_training_data(path_feature, axis = 1)
 
 idx = np.arange(x.shape[0])
 np.random.shuffle(idx)

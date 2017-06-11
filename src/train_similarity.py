@@ -90,7 +90,7 @@ def prepare_training_data(path_feature, path_similarity = '../data/similarity/',
 		y_temp = np.array(y_temp)
 		y_temp_sorted = sorted([(y_temp[k],k) for k in range(len(y_temp))], key = lambda t:t[0])
 		ind = np.arange(len(y_temp))
-		idx = np.concatenate((ind[y_temp > 0.5], np.array([k for _, k in y_temp_sorted[-50:]])))
+		idx = np.concatenate((ind[y_temp > 0.5], np.array([k for _, k in y_temp_sorted[:50]])))
 		x.append(x_temp[idx])
 		y.append(y_temp[idx])
 		if category in score_ignore:

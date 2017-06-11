@@ -241,6 +241,7 @@ class model_cnn(model):
 			if val_error < val_error_current_best:
 				val_error_current_best = val_error
 				self.save_parameters(sess, '../model/similarity/',version)
+		print(val_error_current_best)
 
 	def error(self, sess, X, y):
 		num_batches = X.shape[0] // self._config.batch_size

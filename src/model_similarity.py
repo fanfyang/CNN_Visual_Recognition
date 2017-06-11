@@ -152,14 +152,14 @@ class model_cnn(model):
 			self._parameters['conv1_b'] = bconv1
 			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wconv1)))
 
-		with tf.variable_scope('cnn/fc1') as scope:
-			Wfc1 = tf.get_variable('W',[self._config.input_dim,512], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
-			bfc1 = tf.get_variable('b',[512], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
-			temp1 = tf.matmul(relu1, Wfc1) + bfc1
-			fc1 = tf.nn.dropout(tf.maximum(0.01*temp1, temp1), self._dropout_placeholder)
-			self._parameters['fc1_W'] = Wfc1
-			self._parameters['fc1_b'] = bfc1
-			tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wfc1)))
+		# with tf.variable_scope('cnn/fc1') as scope:
+		# 	Wfc1 = tf.get_variable('W',[self._config.input_dim,512], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
+		# 	bfc1 = tf.get_variable('b',[512], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
+		# 	temp1 = tf.matmul(relu1, Wfc1) + bfc1
+		# 	fc1 = tf.nn.dropout(tf.maximum(0.01*temp1, temp1), self._dropout_placeholder)
+		# 	self._parameters['fc1_W'] = Wfc1
+		# 	self._parameters['fc1_b'] = bfc1
+		# 	tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wfc1)))
 
 		# with tf.variable_scope('cnn/fc2') as scope:
 		# 	Wfc2 = tf.get_variable('W',[512,32], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
@@ -170,9 +170,9 @@ class model_cnn(model):
 		# 	tf.add_to_collection('Reg', tf.reduce_sum(tf.square(Wfc2)))
 
 		with tf.variable_scope('cnn/fc3') as scope:
-			Wfc3 = tf.get_variable('W',[512,1], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
+			Wfc3 = tf.get_variable('W',[self._config.input_dim,1], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
 			bfc3 = tf.get_variable('b',[1], trainable = True, initializer = tf.contrib.layers.xavier_initializer())
-			temp3 = tf.matmul(fc1, Wfc3) + bfc3
+			temp3 = tf.matmul(relu1, Wfc3) + bfc3
 			fc3 = tf.nn.dropout(tf.maximum(0.01*temp3, temp3), self._dropout_placeholder)
 			self._parameters['fc3_W'] = Wfc3
 			self._parameters['fc3_b'] = bfc3

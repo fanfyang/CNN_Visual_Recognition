@@ -90,7 +90,7 @@ def prepare_training_data(path_feature, path_similarity = '../data/similarity/',
 		y_temp = np.array(y_temp)
 		# y_temp_sorted = sorted([(y_temp[k],k) for k in range(len(y_temp))], key = lambda t:t[0])
 		ind = np.arange(len(y_temp))
-		idx = ind[y_temp > 0.4]
+		idx = ind[y_temp > 0.5]
 		# idx = np.array([k for _, k in y_temp_sorted[:500]] + [k for _, k in y_temp_sorted[-100:]])
 		x.append(x_temp[idx])
 		y.append(y_temp[idx])

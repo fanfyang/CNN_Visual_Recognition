@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<title>CYY: Image based recommendation system</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Karma">
+
+<style>
+body, html {
+    height: 100%;
+    font-family: "Inconsolata", sans-serif;
+}
+.bgimg {
+    background-position: center;
+    background-size: cover;
+    background-image: url("./img/box.jpg");
+    min-height: 75%;
+}
+.menu {
+    display: none;
+}
+</style>
+<body>
+
+<!-- Header with image -->
+<header class="bgimg w3-display-container" id="home">
+  
+  <div class="w3-display-middle w3-center">
+  <span class="w3-text-white" style="font-size:90px">Ready? Go! </span>
+      <div class="w3-row-padding" style="margin:0 -16px;">
+      
+        <form id = "form" action = "http://127.0.0.1:5000/upload" method=post enctype=multipart/form-data>
+          <p><input type=file name=file>
+             <input type=submit value=Upload></p >
+        </form>
+        
+      </div>
+  </div>
+
+  <div class="w3-display-bottomright w3-center w3-padding-large">
+    <span class="w3-text-white">Your smart shopping assistant!</span>
+  </div>
+</header>
+
+
+<!-- Add a background color and large text to the whole page -->
+
+<!--Result container-->
+<div id = "result" style="display:none"></div>
+
+<!-- Result Container -->
+<div class="w3-container" id="about">
+  <div class="w3-content" style="max-width:700px">
+    <h5 class="w3-center w3-padding-64"><span class="w3-tag w3-wide">Are you looking for?</span></h5>
+    
+	
+<!--Describe the mdoel a little bit?-->
+	<p>This image based recommendation system is built on convolutional neural network...Our model consists ...</p>
+    <p>In addition ...</p>
+
+	</div>
+	
+  </div>
+
+<!-- End page content -->
+</div>
+
+<!-- Footer -->
+<footer class="w3-center w3-light-grey w3-padding-48 w3-large">
+  <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" title="W3.CSS" target="_blank" class="w3-hover-text-green">CYY</a></p>
+</footer>
+
+
+<!--
+To use this code on your website, get a free API key from Google.
+Read more at: https://www.w3schools.com/graphics/google_maps_basic.asp
+-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

@@ -26,7 +26,18 @@ def top_similar_L2(features, feature, num):
 	temp_sort = sorted(temp, key = lambda t:t[0])
 	return [idx for _, idx in temp_sort[:num]]
 
-def recommend(sess, model, features, labels, categories, files, image_path, num = 9, dis = 'cosine'):
+def top_similar_model(sess, model, features, feature, num):
+	scores = []
+	for i in range(features.shape[0]):
+		x = np.concatenate((features[i][:,np.newaxis], feature[:,np.newaxis]), axis = 1)
+		feed_dict = {model._input_placeholder: [x], model._dropout_placeholder:1.0}
+		pred = sess.run(model._pred, feed_dict)
+		scores.append(pred)
+	temp = [(scores[i], i) for i in range(len(scores))]
+	temp_sort = sorted(temp, key = lambda t:-t[0])
+	return [idx for _, idx in temp_sort[:num]]
+
+def recommend(sess, model, features, labels, categories, files, image_path, num = 9, dis = 'cosine', dis_model = None):
 	label_pred, feature_pred = model.predict(sess, image_path)
 	recommendation = []
 	for i in range(len(label_pred)):
@@ -35,8 +46,10 @@ def recommend(sess, model, features, labels, categories, files, image_path, num 
 		sample_features, sample_files = subsample(features, labels, files, label)
 		if dis == 'cosine':
 			idx = top_similar_cosine(sample_features, feature, num)
-		else:
+		elif dis == 'L2':
 			idx = top_similar_L2(sample_features, feature, num)
+		else:
+			idx = top_similar_model(sess, dis_model, sample_features, feature, num)
 		temp = (categories[label], [sample_files[i] for i in idx])
 		recommendation.append(temp)
 	return recommendation

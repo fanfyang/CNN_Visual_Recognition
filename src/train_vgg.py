@@ -11,6 +11,7 @@ parser.add_argument('--d', help = 'droupout')
 parser.add_argument('--nc', help = 'number of classes')
 parser.add_argument('--bn', help = 'batch normalization')
 parser.add_argument('--v', help = 'version')
+parser.add_argument('--i', help = 'initialization')
 args = parser.parse_args()
 
 version = args.v
@@ -34,7 +35,10 @@ config = Config(**para)
 vgg = model_vgg16_20(config)
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
-vgg.load_parameters(sess,'../data/vgg16/vgg16_weights.npz',rand_init = ['fc8_W', 'fc8_b'])
+if args.i is None:
+	vgg.load_parameters(sess,'../data/vgg16/vgg16_weights.npz',rand_init = ['fc8_W', 'fc8_b'])
+else:
+	vgg.load_parameters(sess,'../model/vgg/para_' + args.i + '.npz')
 vgg.train(sess,X_train - vgg._channel_mean,y_train,X_val - vgg._channel_mean,y_val,X_test - vgg._channel_mean,y_test,version, model = 'vgg')
 
 # # Example 2
